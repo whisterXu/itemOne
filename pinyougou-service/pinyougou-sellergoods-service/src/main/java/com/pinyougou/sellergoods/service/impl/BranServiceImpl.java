@@ -1,6 +1,9 @@
 package com.pinyougou.sellergoods.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
+import com.github.pagehelper.ISelect;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.pinyougou.mapper.BrandMapper;
 import com.pinyougou.service.BrandService;
 import com.pinyougou.pojo.Brand;
@@ -26,6 +29,16 @@ public class BranServiceImpl implements BrandService {
 
     @Override
     public List<Brand> findAll() {
-        return brandMapper.findAll();
+        // 开始分页
+        PageInfo<Brand> pageInfo = PageHelper.startPage(1, 10).doSelectPageInfo(new ISelect() {
+            @Override
+            public void doSelect() {
+                brandMapper.selectAll();
+            }
+        });
+
+        System.out.println("总记录数:" + pageInfo.getTotal());
+        System.out.println("总页数:" + pageInfo.getPages());
+        return pageInfo.getList();
     }
 }
