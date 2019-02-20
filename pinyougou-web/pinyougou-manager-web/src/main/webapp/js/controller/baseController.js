@@ -2,7 +2,7 @@ app.controller("baseController",function ($scope) {
     $scope.paginationConf = {
         currentPage:1,  //当前页
         totalItems:0,   //总页数
-        ItemsPerPage:10,    //每页显示的记录数(页大小)
+        itemsPerPage :10,    //每页显示的记录数(页大小)
         perPageOptions:[10,15,20,25,30], //下拉框选项
         onChange:function () {
             // alert($scope.paginationConf.currentPage);
