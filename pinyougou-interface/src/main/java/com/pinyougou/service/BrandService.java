@@ -1,8 +1,7 @@
 package com.pinyougou.service;
 
 import com.pinyougou.pojo.Brand;
-
-import java.util.List;
+import pinyougou.conmmon.pojo.PageResult;
 
 /**
  * 服务接口
@@ -12,9 +11,12 @@ public interface BrandService {
 
     /**
      * 查询全部brand方法
+     * @param brand
+     * @param currentPage
+     * @param rows
      * @return List<Object>
      */
-    List<Brand> findAll();
+    PageResult findByPage(Brand brand,Integer currentPage,Integer rows);
 
     /**
      * 保存方法
@@ -26,4 +28,9 @@ public interface BrandService {
      * @param  brand
      */
     void update(Brand brand);
+    /**
+     * 批量删除方法
+     * @param  ids
+     */
+    void deleteAll(Long[] ids);
 }

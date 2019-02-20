@@ -11,20 +11,14 @@
     <script src="/plugins/bootstrap/js/bootstrap.min.js"></script>
 
 	<script src="/plugins/angularjs/angular.min.js"></script>
-	<script src="/plugins/angularjs/pagination.js"></script>
 	<link rel="stylesheet" href="/plugins/angularjs/pagination.css"/>
+	<script src="/plugins/angularjs/pagination.js"></script>
 	<script type="text/javascript">
         /** 定义模块 */
-		var app =angular.module("pinyougou",[]);
+		var app =angular.module("pinyougou",['pagination']);
+
         /** 添加控制器 */
 		app.controller("brandController",function ($scope,$http) {
-            /** 读取列表数据绑定到表格中 */
-			$scope.findAll = function () {
-                /** 发送异步请求查询数据 */
-			    $http.get("/brand/findAll").then(function (response) {
-                    $scope.dataList = response.data;
-				});
-            };
 
             /** 添加或修改的方法 */
             $scope.addOrUpdate = function () {
@@ -34,7 +28,7 @@
 				}
                 $http.post("/brand"+ url,$scope.entity ).then(function (response) {
                     if (response.data) {
-                        $scope.findAll()
+                        $scope.reload()
                     }else {
                         alert("亲,添加失败!")
 					}
@@ -43,6 +37,64 @@
             /** 数据回显方法 */
             $scope.show = function (entity) {
 				$scope.entity = JSON.parse(JSON.stringify(entity));
+            };
+
+            /** 为复选框绑定点击事件  获取checkbod复选框的id */
+            $scope.ids = [];
+            $scope.updateSelection= function($event,id){
+				if ($event.target.checked) {
+                    /** 选择把id添加到数组中 */
+                    $scope.ids.push(id);
+				}else {
+                    var index = $scope.ids.indexOf(id);
+                    /** 删除数组中的元素  */
+                    $scope.ids.splice(index,1)
+				}
+			};
+            /** 删除方法 */
+            $scope.delete = function () {
+                if ($scope.ids.length == 0){
+                    alert("请选择您要删除的选项!");
+				} else {
+                    if (confirm("您确定要删除吗?")) {
+                        $http.get("/brand/delete?ids="+$scope.ids).then(function (response) {
+                            if (response.data) {
+                                $scope.reload();
+                            }else {
+                                alert("删除出错!")
+							}
+                        })
+                    }
+				}
+			};
+
+
+			$scope.paginationConf = {
+                currentPage:1,  //当前页
+				totalItems:0,   //总页数
+				ItemsPerPage:10,    //每页显示的记录数(页大小)
+				perPageOptions:[10,15,20,25,30], //下拉框选项
+				onChange:function () {
+                    $scope.reload();
+                }
+            };
+
+			//重新定义方法
+			$scope.reload = function(){
+                /** 重新加载列表数据 */
+                // alert($scope.paginationConf.currentPage);
+                $scope.search($scope.paginationConf.currentPage,$scope.paginationConf.ItemsPerPage);
+			};
+            /** 分页查询品牌信息 */
+            $scope.search = function (page,rows) {
+                // alert($scope.searchEntity);
+				$http.get("/brand/findByPage?page="+page+"&rows="+rows,{params:$scope.searchEntity}).then(function (response) {
+				    //response : {total:"" ,rows[{},{},{}]} 这种格式
+				    //获取响应数据
+                    $scope.dataList = response.data.rows;
+                    //更新总页数
+                    $scope.paginationConf.totalItems=response.data.total;
+				})
             }
         });
 
@@ -51,7 +103,6 @@
 </head>
 <body  ng-app="pinyougou"
 	   ng-controller="brandController"
-	   ng-init="findAll()"
 		class="hold-transition skin-red sidebar-mini ">
 	<!-- .box-body -->
 	<div class="box-header with-border">
@@ -69,7 +120,11 @@
 						<button type="button" class="btn btn-default" title="新建"
 								data-toggle="modal" data-target="#editModal"  ng-click="entity={}"
 						><i class="fa fa-file-o"></i> 新建</button>
-						<button type="button" class="btn btn-default" title="删除" ><i class="fa fa-trash-o"></i> 删除</button>           
+						<!-- ng-click="delete()" 绑定点击事件调用delete()删除方法-->
+						<button type="button" class="btn btn-default" title="删除" 
+								ng-click="delete()">
+							
+							<i class="fa fa-trash-o"></i> 删除</button>           
 						<button type="button" class="btn btn-default" title="刷新" onclick="window.location.reload();"><i class="fa fa-refresh"></i> 刷新</button>
 					</div>
 				</div>
@@ -77,14 +132,16 @@
 			<div class="box-tools pull-right">
 				<div class="has-feedback">
 					<!--  查询条件区-->
+					{{entity}}
 					<table>
 						<tr>
-							<td><input class="form-control" placeholder="品牌名称">
+							<td><input class="form-control" placeholder="品牌名称" ng-model="searchEntity.name">
 							</td>
-							<td><input class="form-control" placeholder="首字母">
+							<td><input class="form-control" placeholder="首字母" ng-model="searchEntity.firstChar">
 							</td>
 							<td>
-								<button type="button" class="btn btn-default">
+								<button type="button" class="btn btn-default"  ng-click="reload()">
+									<!-- 绑定点击事件,调用查询方法 -->
 									<i class="fa fa-trash-o"></i> 查询
 								</button>
 							</td>
@@ -108,7 +165,7 @@
 				</thead>
 				<tbody>
 					<tr ng-repeat="entity in dataList">
-						<td><input  type="checkbox" ></td>			                              
+						<td><input  type="checkbox" ng-click="updateSelection($event,entity.id)"></td>
 						<td>{{entity.id}}</td>
 						<td>{{entity.name}}</td>
 						<td>{{entity.firstChar}}</td>
@@ -119,7 +176,9 @@
 					</tr>
 				</tbody>
 			 </table>
-
+			<!-- 分页标签 -->
+			<!-- 分页指令 -->
+			<tm-pagination conf="paginationConf"/>
 			 <!--数据列表/-->                        
 		</div>
 		<!-- 数据表格 /-->
@@ -136,7 +195,6 @@
 			</div>
 			<div class="modal-body">		
 				<table class="table table-bordered table-striped"  width="800px">
-					{{entity.name}} {{entity.firstChar}}
 					<tr>
 						<td>品牌名称</td>
 						<!--ng-model="entity.name"数据绑定-->

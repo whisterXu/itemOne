@@ -5,12 +5,11 @@ import com.github.pagehelper.ISelect;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.pinyougou.mapper.BrandMapper;
-import com.pinyougou.service.BrandService;
 import com.pinyougou.pojo.Brand;
+import com.pinyougou.service.BrandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
+import pinyougou.conmmon.pojo.PageResult;
 
 /**
  * 服务实现类
@@ -28,18 +27,17 @@ public class BranServiceImpl implements BrandService {
     private BrandMapper brandMapper;
 
     @Override
-    public List<Brand> findAll() {
+    public PageResult findByPage(Brand brand,Integer currentPage,Integer rows) {
         // 开始分页
-        PageInfo<Brand> pageInfo = PageHelper.startPage(1, 10).doSelectPageInfo(new ISelect() {
+        PageInfo<Brand> pageInfo = PageHelper.startPage(currentPage, rows).doSelectPageInfo(new ISelect() {
             @Override
             public void doSelect() {
-                brandMapper.selectAll();
+                brandMapper.findByCondition(brand);
             }
         });
-
         System.out.println("总记录数:" + pageInfo.getTotal());
         System.out.println("总页数:" + pageInfo.getPages());
-        return pageInfo.getList();
+        return new PageResult(pageInfo.getTotal(),pageInfo.getList());
     }
 
     /** 添加方法 */
@@ -47,9 +45,20 @@ public class BranServiceImpl implements BrandService {
     public void save(Brand brand) {
         brandMapper.insert(brand);
     }
+
     /** 更新方法 */
     @Override
     public void update(Brand brand) {
         brandMapper.updateByPrimaryKey(brand);
+    }
+
+    /** 批量删除方法 */
+    @Override
+    public void deleteAll(Long[] ids) {
+        try{
+            brandMapper.deleteAll(ids);
+        }catch(Exception ex){
+            throw new RuntimeException();
+        }
     }
 }
