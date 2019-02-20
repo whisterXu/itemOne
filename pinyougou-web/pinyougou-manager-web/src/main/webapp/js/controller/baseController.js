@@ -3,8 +3,9 @@ app.controller("baseController",function ($scope) {
         currentPage:1,  //当前页
         totalItems:0,   //总页数
         ItemsPerPage:10,    //每页显示的记录数(页大小)
-        // perPageOptions:[10,15,20,25,30], //下拉框选项
+        perPageOptions:[10,15,20,25,30], //下拉框选项
         onChange:function () {
+            // alert($scope.paginationConf.currentPage);
             $scope.reload();
         }
     };
@@ -13,7 +14,7 @@ app.controller("baseController",function ($scope) {
     $scope.reload = function(){
         /** 重新加载列表数据 */
         // alert($scope.paginationConf.currentPage);
-        $scope.search($scope.paginationConf.currentPage,$scope.paginationConf.ItemsPerPage);
+        $scope.search($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage);
     };
 
     /** 为复选框绑定点击事件  获取checkbod复选框的id */

@@ -1,8 +1,8 @@
-
 /** 添加控制器 */
-app.controller("brandController",function ($scope,$controller,$http) {
+app.controller("brandController",function ($scope,$controller,baseService) {
     /** 指定继承baseController */
     $controller("baseController",{$scope:$scope});
+
 
     /** 添加或修改的方法 */
     $scope.addOrUpdate = function () {
@@ -10,7 +10,7 @@ app.controller("brandController",function ($scope,$controller,$http) {
         if ($scope.entity.id){
             url ="/update"
         }
-        $http.post("/brand"+ url,$scope.entity ).then(function (response) {
+        baseService.sendGet("/brand"+ url,$scope.entity ).then(function (response) {
             if (response.data) {
                 $scope.reload()
             }else {
@@ -29,7 +29,7 @@ app.controller("brandController",function ($scope,$controller,$http) {
             alert("请选择您要删除的选项!");
         } else {
             if (confirm("您确定要删除吗?")) {
-                $http.get("/brand/delete?ids="+$scope.ids).then(function (response) {
+                baseService.deleteById("/brand/delete?ids="+$scope.ids).then(function (response) {
                     if (response.data) {
                         $scope.reload();
                     }else {
@@ -39,11 +39,11 @@ app.controller("brandController",function ($scope,$controller,$http) {
             }
         }
     };
-
+    $scope.searchEntity = {};
     /** 分页查询品牌信息 */
     $scope.search = function (page,rows) {
         // alert($scope.searchEntity);
-        $http.get("/brand/findByPage?page="+page+"&rows="+rows,{params:$scope.searchEntity}).then(function (response) {
+        baseService.findByPage("/brand/findByPage",page,rows,$scope.searchEntity).then(function (response) {
             //response : {total:"" ,rows[{},{},{}]} 这种格式
             //获取响应数据
             $scope.dataList = response.data.rows;
