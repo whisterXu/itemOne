@@ -13,92 +13,12 @@
 	<script src="/plugins/angularjs/angular.min.js"></script>
 	<link rel="stylesheet" href="/plugins/angularjs/pagination.css"/>
 	<script src="/plugins/angularjs/pagination.js"></script>
-	<script type="text/javascript">
-        /** 定义模块 */
-		var app =angular.module("pinyougou",['pagination']);
 
-        /** 添加控制器 */
-		app.controller("brandController",function ($scope,$http) {
+	<script src="/js/baseModule-pagination.js"></script>
+	<script src="/js/service/baseService.js"></script>
+	<script src="/js/controller/baseController.js"></script>
+	<script src="/js/controller/brandController.js"></script>
 
-            /** 添加或修改的方法 */
-            $scope.addOrUpdate = function () {
-                var url ="/save";
-                if ($scope.entity.id){
-                    url ="/update"
-				}
-                $http.post("/brand"+ url,$scope.entity ).then(function (response) {
-                    if (response.data) {
-                        $scope.reload()
-                    }else {
-                        alert("亲,添加失败!")
-					}
-                });
-            };
-            /** 数据回显方法 */
-            $scope.show = function (entity) {
-				$scope.entity = JSON.parse(JSON.stringify(entity));
-            };
-
-            /** 为复选框绑定点击事件  获取checkbod复选框的id */
-            $scope.ids = [];
-            $scope.updateSelection= function($event,id){
-				if ($event.target.checked) {
-                    /** 选择把id添加到数组中 */
-                    $scope.ids.push(id);
-				}else {
-                    var index = $scope.ids.indexOf(id);
-                    /** 删除数组中的元素  */
-                    $scope.ids.splice(index,1)
-				}
-			};
-            /** 删除方法 */
-            $scope.delete = function () {
-                if ($scope.ids.length == 0){
-                    alert("请选择您要删除的选项!");
-				} else {
-                    if (confirm("您确定要删除吗?")) {
-                        $http.get("/brand/delete?ids="+$scope.ids).then(function (response) {
-                            if (response.data) {
-                                $scope.reload();
-                            }else {
-                                alert("删除出错!")
-							}
-                        })
-                    }
-				}
-			};
-
-
-			$scope.paginationConf = {
-                currentPage:1,  //当前页
-				totalItems:0,   //总页数
-				ItemsPerPage:10,    //每页显示的记录数(页大小)
-				perPageOptions:[10,15,20,25,30], //下拉框选项
-				onChange:function () {
-                    $scope.reload();
-                }
-            };
-
-			//重新定义方法
-			$scope.reload = function(){
-                /** 重新加载列表数据 */
-                // alert($scope.paginationConf.currentPage);
-                $scope.search($scope.paginationConf.currentPage,$scope.paginationConf.ItemsPerPage);
-			};
-            /** 分页查询品牌信息 */
-            $scope.search = function (page,rows) {
-                // alert($scope.searchEntity);
-				$http.get("/brand/findByPage?page="+page+"&rows="+rows,{params:$scope.searchEntity}).then(function (response) {
-				    //response : {total:"" ,rows[{},{},{}]} 这种格式
-				    //获取响应数据
-                    $scope.dataList = response.data.rows;
-                    //更新总页数
-                    $scope.paginationConf.totalItems=response.data.total;
-				})
-            }
-        });
-
-	</script>
 
 </head>
 <body  ng-app="pinyougou"
