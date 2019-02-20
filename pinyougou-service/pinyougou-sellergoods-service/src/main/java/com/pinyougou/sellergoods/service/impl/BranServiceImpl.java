@@ -41,4 +41,15 @@ public class BranServiceImpl implements BrandService {
         System.out.println("总页数:" + pageInfo.getPages());
         return pageInfo.getList();
     }
+
+    /** 添加方法 */
+    @Override
+    public void save(Brand brand) {
+        brandMapper.insert(brand);
+    }
+    /** 更新方法 */
+    @Override
+    public void update(Brand brand) {
+        brandMapper.updateByPrimaryKey(brand);
+    }
 }
