@@ -15,4 +15,10 @@
     <port>9101</port>
   </properties>
 
+  <dependencies>
+    <dependency>
+      <groupId>com.github.pagehelper</groupId>
+      <artifactId>pagehelper</artifactId>
+    </dependency>
+  </dependencies>
 </project>

@@ -4,10 +4,10 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.pinyougou.pojo.Specification;
 import com.pinyougou.service.SpecificationService;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pinyougou.conmmon.pojo.PageResult;
+
+import java.io.Serializable;
 
 /**
  * 运营商后台规格控制器(服务消费者)
@@ -39,5 +39,33 @@ public class SepcificationController {
                 }
             }
         return specificationService.findByPage(specification, page, rows);
+    }
+
+    /**
+     * 保存的控制器
+     * @param specification
+     * @return
+     */
+    @PostMapping("/save")
+    public boolean save(@RequestBody Specification specification){
+        System.out.println("specification="+specification);
+        try {
+            specificationService.save(specification);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @GetMapping("/delete")
+    public boolean delete(Serializable[] ids){
+        try{
+            specificationService.deleteAll(ids);
+            return true;
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+        return false;
     }
 }

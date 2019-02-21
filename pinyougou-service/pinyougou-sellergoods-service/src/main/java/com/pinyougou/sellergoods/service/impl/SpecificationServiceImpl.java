@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import pinyougou.conmmon.pojo.PageResult;
 
+import java.io.Serializable;
+
 /**
  * 规格服务提供者
  *
@@ -41,5 +43,28 @@ public class SpecificationServiceImpl implements SpecificationService {
             }
         });
         return new PageResult(PageInfo.getTotal(),PageInfo.getList());
+    }
+
+    /**
+     * 保存的方法
+     * @param specification
+     */
+    @Override
+    public void save(Specification specification) {
+        try{
+            specificationMapper.insertSelective(specification);
+            specificationMapper.save(specification);
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deleteAll(Serializable[] ids) {
+        try{
+            specificationMapper.deleteAll(ids);
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
     }
 }

@@ -42,7 +42,7 @@ app.controller("brandController",function ($scope,$controller,baseService) {
             alert("请选择您要删除的选项!");
         } else {
             if (confirm("您确定要删除吗?")) {
-                baseService.deleteById("/brand/delete?ids="+$scope.ids).then(function (response) {
+                baseService.deleteById("/brand/delete",$scope.ids).then(function (response) {
                     if (response.data) {
                         $scope.reload();
                     }else {
