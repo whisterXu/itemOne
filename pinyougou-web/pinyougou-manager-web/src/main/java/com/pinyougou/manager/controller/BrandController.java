@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import pinyougou.conmmon.pojo.PageResult;
 
 /**
- * 运营商后台控制器(服务消费者)
+ * 运营商后台品牌控制器(服务消费者)
  * @author whister
  */
 @RestController

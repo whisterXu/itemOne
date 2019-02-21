@@ -20,7 +20,7 @@ import pinyougou.conmmon.pojo.PageResult;
 public class BranServiceImpl implements BrandService {
 
     /**
-     * 查询全部brand方法
+     * 带条件分页查询
      * 注入数据访问接口代理对象
      */
     @Autowired

@@ -3,6 +3,19 @@ app.controller("brandController",function ($scope,$controller,baseService) {
     /** 指定继承baseController */
     $controller("baseController",{$scope:$scope});
 
+    //创建searchEntity对象
+    $scope.searchEntity = {};
+    /** 分页查询品牌信息 */
+    $scope.search = function (page,rows) {
+        // alert($scope.searchEntity);
+        baseService.findByPage("/brand/findByPage",page,rows,$scope.searchEntity).then(function (response) {
+            //response : {total:"" ,rows[{},{},{}]} 这种格式
+            //获取响应数据
+            $scope.dataList = response.data.rows;
+            //更新总页数
+            $scope.paginationConf.totalItems=response.data.total;
+        })
+    };
 
     /** 添加或修改的方法 */
     $scope.addOrUpdate = function () {
@@ -39,16 +52,5 @@ app.controller("brandController",function ($scope,$controller,baseService) {
             }
         }
     };
-    $scope.searchEntity = {};
-    /** 分页查询品牌信息 */
-    $scope.search = function (page,rows) {
-        // alert($scope.searchEntity);
-        baseService.findByPage("/brand/findByPage",page,rows,$scope.searchEntity).then(function (response) {
-            //response : {total:"" ,rows[{},{},{}]} 这种格式
-            //获取响应数据
-            $scope.dataList = response.data.rows;
-            //更新总页数
-            $scope.paginationConf.totalItems=response.data.total;
-        })
-    }
+
 });
