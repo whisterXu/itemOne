@@ -40,6 +40,8 @@ app.controller("specificationController", function ($scope, $controller, baseSer
         })
     };
 
+
+    /** 删除的方法 */
     $scope.delete = function () {
         if ($scope.ids.length == 0) {
             alert("请选择你要删除的选项!")
@@ -54,6 +56,14 @@ app.controller("specificationController", function ($scope, $controller, baseSer
                 })
             }
         }
-    }
+    };
 
+    /** 修改数据时 数据回显方法 */
+    $scope.show = function (entity) {
+        $scope.entity = JSON.parse(JSON.stringify(entity));
+        /** 根据specId查询规格选项 回显数据*/
+        baseService.findOne("/specification/findBySpecId",entity.id).then(function (response) {
+            $scope.entity.specificationOptions = response.data;
+        })
+    };
 });

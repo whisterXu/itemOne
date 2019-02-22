@@ -2,12 +2,14 @@ package com.pinyougou.manager.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.pinyougou.pojo.Specification;
+import com.pinyougou.pojo.SpecificationOption;
+import com.pinyougou.service.SpecificationOptionService;
 import com.pinyougou.service.SpecificationService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import pinyougou.conmmon.pojo.PageResult;
 
-import java.io.Serializable;
+import java.util.List;
 
 /**
  * 运营商后台规格控制器(服务消费者)
@@ -19,6 +21,8 @@ public class SepcificationController {
 
     @Reference(timeout = 10000)
     private SpecificationService specificationService;
+    @Reference(timeout = 10000)
+    private SpecificationOptionService specificationOptionService;
 
     /**
      * 带条件分页查询
@@ -48,7 +52,6 @@ public class SepcificationController {
      */
     @PostMapping("/save")
     public boolean save(@RequestBody Specification specification){
-        System.out.println("specification="+specification);
         try {
             specificationService.save(specification);
             return true;
@@ -58,8 +61,20 @@ public class SepcificationController {
         return false;
     }
 
+    @PostMapping("/update")
+    public boolean update(@RequestBody Specification specification){
+        try {
+            specificationService.update(specification);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /** 批量删除 */
     @GetMapping("/delete")
-    public boolean delete(Serializable[] ids){
+    public boolean delete(Long[] ids){
         try{
             specificationService.deleteAll(ids);
             return true;
@@ -67,5 +82,20 @@ public class SepcificationController {
             ex.printStackTrace();
         }
         return false;
+    }
+
+    /**
+     * 根据SpecId查询SpecificationOption
+     * @param id
+     * @return List<SpecificationOption>
+     */
+    @GetMapping("/findBySpecId")
+    public List<SpecificationOption> findBySpecId(Long id){
+        try {
+            return specificationOptionService.findBySpecId(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

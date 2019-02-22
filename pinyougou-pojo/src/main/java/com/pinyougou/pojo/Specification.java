@@ -1,14 +1,13 @@
 package com.pinyougou.pojo;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.*;
-
 /**
  * 规格实体类
- * @author LEE.SIU.WAH
- * @email lixiaohua7@163.com
+ * @author whister.xu
+ * @email 452140404@qq.com
  * @date 2017年12月7日 下午3:31:00
  * @version 1.0
  */

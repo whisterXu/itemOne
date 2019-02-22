@@ -3,7 +3,6 @@ package com.pinyougou.mapper;
 import com.pinyougou.pojo.Specification;
 import tk.mybatis.mapper.common.Mapper;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -19,15 +18,10 @@ public interface SpecificationMapper extends Mapper<Specification> {
      */
     List<Specification> findByCondition(Specification specification);
 
-    /**
-     * 添加规格选项
-     * @param specification
-     */
-    void save(Specification specification);
 
     /**
      * 批量删除(规格)
      * @param ids
      */
-    void deleteAll(Serializable[] ids);
+    void deleteAll(Long[] ids);
 }

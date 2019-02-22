@@ -3,8 +3,6 @@ package com.pinyougou.service;
 import com.pinyougou.pojo.Specification;
 import pinyougou.conmmon.pojo.PageResult;
 
-import java.io.Serializable;
-
 /**
  * 规格服务接口
  * @author whister
@@ -28,8 +26,17 @@ public interface SpecificationService {
     void save(Specification specification);
 
     /**
+     * 修改的方法
+     * @param specification
+     */
+    void update(Specification specification);
+
+    /**
      * 删除规格
      * @param ids
      */
-    void deleteAll(Serializable[] ids);
+    void deleteAll(Long[] ids);
+
+
+
 }

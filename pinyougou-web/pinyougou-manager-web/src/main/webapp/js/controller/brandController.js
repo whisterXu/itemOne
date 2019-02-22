@@ -23,7 +23,7 @@ app.controller("brandController",function ($scope,$controller,baseService) {
         if ($scope.entity.id){
             url ="/update"
         }
-        baseService.sendGet("/brand"+ url,$scope.entity ).then(function (response) {
+        baseService.sendPost("/brand"+ url,$scope.entity ).then(function (response) {
             if (response.data) {
                 $scope.reload()
             }else {

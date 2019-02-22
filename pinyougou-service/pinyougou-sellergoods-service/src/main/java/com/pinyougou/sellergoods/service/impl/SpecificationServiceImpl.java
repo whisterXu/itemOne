@@ -5,13 +5,13 @@ import com.github.pagehelper.ISelect;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.pinyougou.mapper.SpecificationMapper;
+import com.pinyougou.mapper.SpecificationOptionMapper;
 import com.pinyougou.pojo.Specification;
+import com.pinyougou.pojo.SpecificationOption;
 import com.pinyougou.service.SpecificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import pinyougou.conmmon.pojo.PageResult;
-
-import java.io.Serializable;
 
 /**
  * 规格服务提供者
@@ -25,6 +25,8 @@ public class SpecificationServiceImpl implements SpecificationService {
     /** 注入接口的实现代理对象 */
     @Autowired
     private SpecificationMapper specificationMapper;
+    @Autowired
+    private SpecificationOptionMapper specificationOptionMapper;
 
     /**
      * 带条件分页查询
@@ -53,18 +55,40 @@ public class SpecificationServiceImpl implements SpecificationService {
     public void save(Specification specification) {
         try{
             specificationMapper.insertSelective(specification);
-            specificationMapper.save(specification);
+            specificationOptionMapper.save(specification);
         }catch(Exception ex){
             ex.printStackTrace();
         }
     }
 
+    /**
+     * 修改规格和规格选项的方法
+     * @param specification
+     */
     @Override
-    public void deleteAll(Serializable[] ids) {
+    public void update(Specification specification) {
+        //根据主键,修改规格表中的规格名称.
+        specificationMapper.updateByPrimaryKey(specification);
+
+//        先根据specId删除规格选项中的内容
+        SpecificationOption specificationOption = new SpecificationOption();
+        specificationOption.setSpecId(specification.getId());
+        specificationOptionMapper.delete(specificationOption);
+
+//        再添加规格选项内容.
+        specificationOptionMapper.save(specification);
+    }
+
+    /**
+     *  批量删除
+     * @param ids
+     */
+    @Override
+    public void deleteAll(Long[] ids) {
         try{
             specificationMapper.deleteAll(ids);
         }catch(Exception ex){
-            ex.printStackTrace();
+            throw new RuntimeException();
         }
     }
 }
