@@ -15,4 +15,11 @@ public interface SpecificationOptionMapper extends Mapper<SpecificationOption>  
      * @param specification
      */
     void save(Specification specification);
+
+    /**
+     *  根据sqpecId外键删除规格选项数据
+     * @param specId
+     */
+    void deleteAll(Long[] specId);
+
 }

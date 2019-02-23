@@ -3,6 +3,9 @@ package com.pinyougou.service;
 import com.pinyougou.pojo.Brand;
 import pinyougou.conmmon.pojo.PageResult;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * 服务接口
  * @author whister
@@ -33,4 +36,10 @@ public interface BrandService {
      * @param  ids
      */
     void deleteAll(Long[] ids);
+
+    /**
+     * 查询品牌
+     * @return
+     */
+    List<Map<String ,Object>> findBrandList();
 }

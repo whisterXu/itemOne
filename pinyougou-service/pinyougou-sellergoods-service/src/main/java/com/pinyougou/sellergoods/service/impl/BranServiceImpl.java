@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import pinyougou.conmmon.pojo.PageResult;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * 服务实现类
  * @author whister
@@ -60,5 +63,15 @@ public class BranServiceImpl implements BrandService {
         }catch(Exception ex){
             throw new RuntimeException();
         }
+    }
+
+    /**
+     * 查询品牌
+     *
+     * @return
+     */
+    @Override
+    public List<Map<String ,Object>> findBrandList() {
+        return brandMapper.findAllByIdAndName();
     }
 }

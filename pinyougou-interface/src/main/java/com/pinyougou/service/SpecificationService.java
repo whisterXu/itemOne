@@ -3,6 +3,9 @@ package com.pinyougou.service;
 import com.pinyougou.pojo.Specification;
 import pinyougou.conmmon.pojo.PageResult;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * 规格服务接口
  * @author whister
@@ -37,6 +40,11 @@ public interface SpecificationService {
      */
     void deleteAll(Long[] ids);
 
+    /**
+     * 查询全部规格 返回给模板管理的增加选项
+     * 格式:{data: [{id: 1, text: '联想'}, {id: 2, text: '华为'}, {id: 3, text: '小米'}]};
+     * @return List<Map<String,Object>>
+     */
 
-
+    List<Map<String,Object>> findSpecificationList();
 }

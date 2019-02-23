@@ -24,7 +24,8 @@
 
 </head>
 
-<body 	ng-app="pinyougou" ng-controller="specificationController"
+<body 	ng-app="pinyougou"
+		 ng-controller="specificationController"
 		class="hold-transition skin-red sidebar-mini" >
   	<!-- .box-body -->                
   	<div class="box-header with-border">
@@ -129,7 +130,6 @@
 		                      <th class="sorting">操作</th>
 		                    </tr>	
 	                    </thead>
-                             {{entity}}
 	                    <tbody>
 	                      <tr ng-repeat="so in entity.specificationOptions">
 					            <td>
@@ -155,7 +155,7 @@
 			</div>
 			<div class="modal-footer">						
 				<button class="btn btn-success" data-dismiss="modal"
-                        ng-click="saveOrUpdate()"
+                        ng-click="saveOrUpdate($index)"
                         aria-hidden="true">保存</button>
 				<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
 			</div>

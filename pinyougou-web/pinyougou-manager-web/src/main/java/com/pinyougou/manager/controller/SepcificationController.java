@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import pinyougou.conmmon.pojo.PageResult;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 运营商后台规格控制器(服务消费者)
@@ -61,6 +62,11 @@ public class SepcificationController {
         return false;
     }
 
+    /**
+     *  更新品牌名称和规格选项
+     * @param specification
+     * @return boolean
+     */
     @PostMapping("/update")
     public boolean update(@RequestBody Specification specification){
         try {
@@ -93,6 +99,22 @@ public class SepcificationController {
     public List<SpecificationOption> findBySpecId(Long id){
         try {
             return specificationOptionService.findBySpecId(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    /**
+     * 查询全部规格 返回给模板管理的增加选项
+     * 格式:{data: [{id: 1, text: '联想'}, {id: 2, text: '华为'}, {id: 3, text: '小米'}]};
+     * @return   List<Map<String ,Object>>
+     */
+    @GetMapping("/findSpecificationList")
+    public List<Map<String ,Object>> findSpecificationList(){
+        try {
+            return specificationService.findSpecificationList();
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -14,6 +14,7 @@ app.controller("brandController",function ($scope,$controller,baseService) {
             $scope.dataList = response.data.rows;
             //更新总页数
             $scope.paginationConf.totalItems=response.data.total;
+
         })
     };
 

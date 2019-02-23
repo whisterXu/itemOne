@@ -11,4 +11,12 @@
         </foreach>
     </insert>
 
+
+    <!-- 批量删除sql -->
+    <delete id="deleteAll">
+        delete  from tb_specification_option where
+        <foreach collection="array" item="id" open="spec_id in(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
 </mapper>

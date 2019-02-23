@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import pinyougou.conmmon.pojo.PageResult;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * 规格服务提供者
  *
@@ -67,16 +70,21 @@ public class SpecificationServiceImpl implements SpecificationService {
      */
     @Override
     public void update(Specification specification) {
-        //根据主键,修改规格表中的规格名称.
-        specificationMapper.updateByPrimaryKey(specification);
+
+        try {
+            //根据主键,修改规格表中的规格名称.
+            specificationMapper.updateByPrimaryKey(specification);
 
 //        先根据specId删除规格选项中的内容
-        SpecificationOption specificationOption = new SpecificationOption();
-        specificationOption.setSpecId(specification.getId());
-        specificationOptionMapper.delete(specificationOption);
+            SpecificationOption specificationOption = new SpecificationOption();
+            specificationOption.setSpecId(specification.getId());
+            specificationOptionMapper.delete(specificationOption);
 
 //        再添加规格选项内容.
-        specificationOptionMapper.save(specification);
+            specificationOptionMapper.save(specification);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -87,8 +95,20 @@ public class SpecificationServiceImpl implements SpecificationService {
     public void deleteAll(Long[] ids) {
         try{
             specificationMapper.deleteAll(ids);
+            specificationOptionMapper.deleteAll(ids);
         }catch(Exception ex){
             throw new RuntimeException();
         }
+    }
+
+    /**
+     * 查询全部规格 返回给模板管理的增加选项
+     * 格式:{data: [{id: 1, text: '联想'}, {id: 2, text: '华为'}, {id: 3, text: '小米'}]};
+     *
+     * @return List<Map < String , Object>>
+     */
+    @Override
+    public List<Map<String, Object>> findSpecificationList() {
+        return specificationMapper.findSpecificationList();
     }
 }

@@ -9,6 +9,7 @@ app.controller("specificationController", function ($scope, $controller, baseSer
     $scope.search = function (page, rows) {
         baseService.findByPage("/specification/findByPage", page, rows, $scope.searchEntity).then(function (response) {
             $scope.dataList = response.data.rows;
+            //更新总记录数
             $scope.paginationConf.totalItems = response.data.total;
         })
     };

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pinyougou.mapper.TypeTemplateMapper">
+
+    <!-- 多条件查询sql -->
+    <select id="findByCondition" resultType="com.pinyougou.pojo.TypeTemplate">
+        select * from tb_type_template
+        <where>
+            <if test="name != null and name != ''">
+                name like CONCAT('%',#{name},'%')
+            </if>
+        </where>
+        order by id asc
+    </select>
+
+
+
+
+
+
+
+    <!--&lt;!&ndash; 添加选项规格 &ndash;&gt;-->
+    <!--<insert id="save">-->
+        <!--insert into tb_specification_option (option_name, spec_id, orders) values-->
+        <!--<foreach collection="specificationOptions" item="so" separator=",">-->
+            <!--(#{so.optionName},#{id},#{so.orders})-->
+        <!--</foreach>-->
+    <!--</insert>-->
+
+
+    <!--&lt;!&ndash; 批量删除sql &ndash;&gt;-->
+    <!--<delete id="deleteAll">-->
+        <!--delete  from tb_specification_option where-->
+        <!--<foreach collection="array" item="id" open="spec_id in(" separator="," close=")">-->
+            <!--#{id}-->
+        <!--</foreach>-->
+    <!--</delete>-->
+</mapper>

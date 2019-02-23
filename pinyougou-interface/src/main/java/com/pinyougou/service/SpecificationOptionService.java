@@ -11,5 +11,4 @@ import java.util.List;
 public interface SpecificationOptionService {
 
     List<SpecificationOption> findBySpecId(Long id);
-
 }

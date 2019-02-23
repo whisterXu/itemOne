@@ -7,6 +7,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import pinyougou.conmmon.pojo.PageResult;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * 运营商后台品牌控制器(服务消费者)
  * @author whister
@@ -80,5 +83,19 @@ public class BrandController {
             ex.printStackTrace();
         }
         return false;
+    }
+
+    /**
+     * 查询全部品牌
+     * @return   List<Map<String ,Object>>
+     */
+    @GetMapping("/findBrandList")
+    public List<Map<String ,Object>> findBrandList(){
+        try {
+            return brandService.findBrandList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
