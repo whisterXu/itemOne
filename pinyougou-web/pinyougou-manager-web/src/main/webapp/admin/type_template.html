@@ -92,14 +92,16 @@
 				</thead>
 				<tbody>
 				<!-- ng-click="updateSelection($event,entity.id)" 绑定点击事件调用updateSelection
-				 	更新复选框选择方法-->
+				 	更新复选框选择方法
+				 	调用方法jsonArr2Str(jsonArrStr) 传入参数;
+				 	-->
 					<tr ng-repeat="entity in dataList">
 						<td><input type="checkbox" ng-click="updateSelection($event,entity.id)"></td>
 						<td>{{entity.id}}</td>
 						<td>{{entity.name}}</td>
-						<td>{{entity.brandIds}}</td>
-						<td>{{entity.specIds}}</td>
-						<td>{{entity.customAttributeItems}}</td>
+						<td>{{jsonArr2Str(entity.brandIds)}}</td>
+						<td>{{jsonArr2Str(entity.specIds)}}</td>
+						<td>{{jsonArr2Str(entity.customAttributeItems)}}</td>
 						<td class="text-center">
 							<button type="button" class="btn bg-olive btn-xs"
 									ng-click="show(entity);"
@@ -124,8 +126,7 @@
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 				<h3 id="myModalLabel">商品类型模板编辑</h3>
 			</div>
-			<div class="modal-body">							
-				{{entity}}
+			<div class="modal-body">
 				<table class="table table-bordered table-striped"  width="800px">
 			      	<tr>
 			      		<td>模版名称</td>

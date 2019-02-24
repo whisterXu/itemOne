@@ -78,5 +78,15 @@ app.controller("typeTemplateController", function ($scope, $controller, baseServ
                 alert("亲,删除失败!");
             }
         })
+    };
+
+    $scope.jsonArr2Str = function (jsonArrStr) {
+        var jsonArr = JSON.parse(jsonArrStr);
+        var resArr = [];
+        for (var i = 0; i < jsonArr.length; i++) {
+            var json = jsonArr[i];
+            resArr.push(json.text);
+        }
+        return resArr.join(",");
     }
 });
