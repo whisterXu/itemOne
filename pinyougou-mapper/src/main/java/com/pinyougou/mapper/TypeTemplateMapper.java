@@ -16,5 +16,9 @@ public interface TypeTemplateMapper extends Mapper<TypeTemplate> {
      */
     List<TypeTemplate> findByCondition(TypeTemplate typeTemplate);
 
-
+    /**
+     *  根据ID删除
+     * @param ids
+     */
+    void deleteAll(long[] ids);
 }

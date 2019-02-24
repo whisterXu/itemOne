@@ -55,4 +55,26 @@ public class TypeTemplateServiceImpl implements TypeTemplateService {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * 模板更新
+     * @param typeTemplate
+     */
+    @Override
+    public void update(TypeTemplate typeTemplate) {
+        try {
+            typeTemplateMapper.updateByPrimaryKeySelective(typeTemplate);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 删除模板方法
+     * @param ids
+     */
+    @Override
+    public void deleteAll(long[] ids) {
+        typeTemplateMapper.deleteAll(ids);
+    }
 }

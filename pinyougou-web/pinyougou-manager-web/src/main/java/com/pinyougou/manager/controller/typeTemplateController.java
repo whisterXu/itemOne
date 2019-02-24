@@ -51,4 +51,36 @@ public class typeTemplateController {
         }
         return false;
     }
+
+    /**
+     * 模板更新的方法
+     * @param typeTemplate
+     * @return
+     */
+    @PostMapping("/update")
+    public boolean update(@RequestBody TypeTemplate typeTemplate){
+        try {
+            typeTemplateService.update(typeTemplate);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * 删除模板方法
+     * @param ids
+     * @return boolean
+     */
+    @GetMapping("/delete")
+    public boolean delete(long[] ids){
+        try{
+            typeTemplateService.deleteAll(ids);
+            return true;
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+        return false;
+    }
 }

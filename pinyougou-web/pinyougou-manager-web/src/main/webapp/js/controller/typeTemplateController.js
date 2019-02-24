@@ -39,6 +39,9 @@ app.controller("typeTemplateController", function ($scope, $controller, baseServ
     };
 
 
+    /**
+     * 模板增加和更新的方法
+     */
     $scope.saveOrUpdate = function () {
         var url = "/save";
         if ($scope.entity.id){
@@ -51,21 +54,29 @@ app.controller("typeTemplateController", function ($scope, $controller, baseServ
                 alert("亲,添加失败!");
             }
         })
-
     };
-    // /** 规格列表 */
-    // $scope.findSpecificationList = function () {
-    //     baseService.sendGet("/specification/findSpecificationList").then(function (response) {
-    //         $scope.specificationList = {data: response.data};
-    //     })
-    // };
 
+    /** 修改时回显数据 */
+    $scope.show = function (entity) {
+        //把entity先转换成字符串再转换成Json对象
+        $scope.entity = JSON.parse(JSON.stringify(entity));
+        $scope.entity.specIds = JSON.parse(entity.specIds);
+        $scope.entity.brandIds = JSON.parse(entity.brandIds);
+        $scope.entity.customAttributeItems = JSON.parse(entity.customAttributeItems)
+    };
 
+    /** 删除方法
+     * 1. 调用baseController中的updateSelection方法,更新复选框的选择
+     * 2.调用baseService中deleteById删除方法,发送异步请求
+     * */
 
-    /** 品牌列表 */
-    // $scope.brandList = {data: [{id: 1, text: '联想'}, {id: 2, text: '华为'}, {id: 3, text: '小米'}]};
-    // $scope.brandList.dataList
-    // $scope.brandList = {data:$scope.brandList.dataList}
-
-
+    $scope.delete = function () {
+        baseService.deleteById("/typeTemplate/delete",$scope.ids).then(function (response) {
+            if (response.data) {
+                $scope.reload();
+            }else{
+                alert("亲,删除失败!");
+            }
+        })
+    }
 });
