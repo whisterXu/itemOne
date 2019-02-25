@@ -1,4 +1,5 @@
 app.controller("baseController",function ($scope) {
+    /** 分页信息 */
     $scope.paginationConf = {
         currentPage:1,  //当前页
         totalItems:0,   //总页数
@@ -24,7 +25,7 @@ app.controller("baseController",function ($scope) {
         if ($event.target.checked) {
             /** 选择把id添加到数组中 */
             $scope.ids.push(id);
-            alert($scope.ids);
+            // alert($scope.ids);
         }else {
             var index = $scope.ids.indexOf(id);
             /** 删除数组中的元素  */
