@@ -7,6 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import pinyougou.conmmon.pojo.PageResult;
 
+import java.util.List;
+
 /**
  * 模板管理控制器
  * @author whister.xu
@@ -82,5 +84,15 @@ public class typeTemplateController {
             ex.printStackTrace();
         }
         return false;
+    }
+
+    @GetMapping("/findTypeTemplateList")
+    public List<TypeTemplate> findTypeTemplateList(){
+        try {
+            return  typeTemplateService.findTypeTemplateList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

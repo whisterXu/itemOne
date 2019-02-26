@@ -25,7 +25,7 @@ app.controller("baseController",function ($scope) {
         if ($event.target.checked) {
             /** 选择把id添加到数组中 */
             $scope.ids.push(id);
-            // alert($scope.ids);
+            alert($scope.ids);
         }else {
             var index = $scope.ids.indexOf(id);
             /** 删除数组中的元素  */

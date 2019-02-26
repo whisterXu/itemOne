@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import pinyougou.conmmon.pojo.PageResult;
 
+import java.util.List;
+
 @Service(interfaceName ="com.pinyougou.service.TypeTemplateService" )
 @Transactional
 public class TypeTemplateServiceImpl implements TypeTemplateService {
@@ -76,5 +78,18 @@ public class TypeTemplateServiceImpl implements TypeTemplateService {
     @Override
     public void deleteAll(long[] ids) {
         typeTemplateMapper.deleteAll(ids);
+    }
+
+    /**
+     * 查询全部模板列表
+     * @return
+     */
+    @Override
+    public List<TypeTemplate> findTypeTemplateList() {
+        try {
+            return typeTemplateMapper.selectAll();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

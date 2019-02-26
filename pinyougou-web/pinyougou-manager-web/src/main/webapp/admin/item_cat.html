@@ -24,7 +24,7 @@
 	</head>
 
 	<body 	ng-app="pinyougou" ng-controller="itemCatController"
-			 ng-init="findItemCatByParentId(0)"
+			 ng-init="findItemCatByParentId(0);findTypeTemplateList()"
 			class="hold-transition skin-red sidebar-mini" >
 
 		<!-- .box-body -->
@@ -50,7 +50,9 @@
 								data-toggle="modal" data-target="#editModal">
 								<i class="fa fa-file-o"></i> 新建
 							</button>
-							<button type="button" class="btn btn-default" title="删除">
+							<button type="button" class="btn btn-default"
+									ng-click="delete()"
+									title="删除">
 								<i class="fa fa-trash-o"></i> 删除
 							</button>
 							<button type="button"
@@ -79,7 +81,7 @@
 					</thead>
 					<tbody>
 						<tr ng-repeat=" entity in dataList">
-							<td><input type="checkbox"></td>
+							<td><input type="checkbox" ng-click="updateSelection($event,entity.id)"></td>
 							<td>{{entity.id}}</td>
 							<td>{{entity.name}}</td>
 							<td>{{entity.typeId}}</td>
@@ -89,6 +91,7 @@
 										ng-if="grade < 3"
 										class="btn bg-olive btn-xs">查询下级</button>
 								<button type="button" class="btn bg-olive btn-xs"
+										ng-click="show(entity)"
 									data-toggle="modal" data-target="#editModal">修改</button>
 							</td>
 						</tr>
@@ -118,24 +121,31 @@
 						<tr>
 				      		<td>上级商品分类</td>
 				      		<td>
-				      		   珠宝 >>  银饰
+								<span ng-if="grade > 1"> {{itemCat_1.name}}</span>
+								<span ng-if="grade > 2"> >> {{itemCat_2.name}}</span>
 				      		</td>
 				      	</tr>
 				      	<tr>
 				      		<td>商品分类名称</td>
-				      		<td><input  class="form-control" placeholder="商品分类名称">  </td>
+				      		<td><input  class="form-control" placeholder="商品分类名称" ng-model="itemCat.name">  </td>
 				      	</tr>			  
 				      	<tr>
 				      		<td>类型模板</td>
-				      		<td>	      		
-				      			<input select2 config="options['type_template']" placeholder="商品类型模板" class="form-control" type="text"/>
-				      		</td>		      		      		
+				      		<td>
+								<select class="form-control"
+										ng-model="itemCat.typeId"
+										ng-options="type.id as type.name for type in typeTemplateList">
+									<option value="">==选择类型模板==</option>
+								</select>
+							</td>
 				      	</tr>		      	
 					 </table>				
 					
 				</div>
 				<div class="modal-footer">						
-					<button class="btn btn-success" data-dismiss="modal" aria-hidden="true">保存</button>
+					<button class="btn btn-success" data-dismiss="modal"
+							ng-click="saveOrUpdate()";
+							aria-hidden="true">保存</button>
 					<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
 				</div>
 			  </div>

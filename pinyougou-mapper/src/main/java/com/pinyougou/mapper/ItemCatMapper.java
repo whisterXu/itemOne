@@ -17,4 +17,10 @@ public interface ItemCatMapper extends Mapper<ItemCat> {
      */
     @Select("select * from tb_item_cat where parent_id = #{parentId};")
     void findByParentId(@Param("parentId") Long parentId);
+
+    /**
+     *  批量删除分类
+     * @param ids
+     */
+    void deleteByCondition(Long[] ids);
 }

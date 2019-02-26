@@ -3,6 +3,8 @@ package com.pinyougou.service;
 import com.pinyougou.pojo.TypeTemplate;
 import pinyougou.conmmon.pojo.PageResult;
 
+import java.util.List;
+
 /**
  * 模板管理服务接口
  * @author whister
@@ -36,4 +38,10 @@ public interface TypeTemplateService {
      * @param ids
      */
     void deleteAll(long[] ids);
+
+    /**
+     * 查询全部模板列表
+     * @return
+     */
+    List<TypeTemplate> findTypeTemplateList();
 }

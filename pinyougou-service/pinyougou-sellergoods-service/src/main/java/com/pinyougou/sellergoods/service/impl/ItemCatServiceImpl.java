@@ -41,4 +41,38 @@ public class ItemCatServiceImpl implements ItemCatService {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * 添加方法
+     */
+    @Override
+    public void save(ItemCat itemCat){
+        try {
+            itemCatMapper.insertSelective(itemCat);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void update(ItemCat itemCat) {
+        try {
+            itemCatMapper.updateByPrimaryKeySelective(itemCat);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 批量删除分类
+     * @param ids
+     */
+    @Override
+    public void delete(Long[] ids) {
+        try {
+            itemCatMapper.deleteByCondition(ids);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
