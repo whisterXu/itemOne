@@ -11,10 +11,23 @@
     <link rel="stylesheet" href="../css/style.css">
 	<script src="/plugins/jQuery/jquery-2.2.3.min.js"></script>
     <script src="/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+	<!-- 引入AngularJS和分页插件的相关js文件 -->
+	<script type="text/javascript" src="/plugins/angularjs/angular.min.js"></script>
+	<link rel="stylesheet" href="/plugins/angularjs/pagination.css" type="text/css" >
+	<script src="/plugins/angularjs/pagination.js"></script>
+	<!-- 引入AgularJS MVC分层JS  -->
+	<script src="/js/baseModule-pagination.js"></script>
+	<script src="/js/service/baseService.js"></script>
+	<script src="/js/controller/baseController.js"></script>
+	<script src="/js/controller/sellerController.js"></script>
+
     
 </head>
 
-<body class="hold-transition skin-red sidebar-mini"  >
+<body 	ng-app="pinyougou"
+		 ng-controller="sellerController"
+		class="hold-transition skin-red sidebar-mini"  >
   <!-- .box-body -->
                 <div class="box box-primary">
                     <div class="box-header with-border">
@@ -60,7 +73,7 @@
 			                          </tr>
 			                      </thead>
 			                      <tbody>
-			                          <tr>
+			                          <tr >
 			                              <td><input  type="checkbox"></td>			                              
 				                          <td>1</td>
 									      <td>梦琪琪商贸有限公司</td>
@@ -75,26 +88,10 @@
 		                                 	  <button type="button" class="btn bg-olive btn-xs" data-toggle="modal" data-target="#sellerModal" >详情</button>                                           
 		                                  </td>
 			                          </tr>
-									  <tr>
-			                              <td><input  type="checkbox"></td>			                              
-				                          <td>2</td>
-									      <td>黑瞎子苹果专卖店</td>
-									      <td>黑瞎子</td>
-									      <td>孙大鹏</td>
-									      <td>13622244111</td>
-		                                  <td>
-			                                  
-										      <span>审核通过</span>	
-										      
-		                                  </td>
-		                                  <td class="text-center">                                           
-		                                 	  <button type="button" class="btn bg-olive btn-xs" data-toggle="modal" data-target="#sellerModal" >详情</button>                                           
-		                                  </td>
-			                          </tr>
 			                      </tbody>
 			                  </table>
-			                  <!--数据列表/-->                        
-							  
+			                  <!--数据列表/-->
+							<tm-pagination conf="paginationConf"/>
 							 
                         </div>
                         <!-- 数据表格 /-->

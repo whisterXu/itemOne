@@ -11,6 +11,8 @@ app.controller("typeTemplateController", function ($scope, $controller, baseServ
             $scope.dataList = response.data.rows;
             /** 更新总记录数 */
             $scope.paginationConf.totalItems = response.data.total;
+            $scope.dataList = response.data.rows;
+            $scope.reload()
         })
     };
 
