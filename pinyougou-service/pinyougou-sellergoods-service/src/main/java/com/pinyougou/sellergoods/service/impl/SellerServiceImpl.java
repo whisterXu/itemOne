@@ -10,6 +10,9 @@ import com.pinyougou.service.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import pinyougou.conmmon.pojo.PageResult;
 
+import java.io.Serializable;
+import java.util.Date;
+
 @Service(interfaceName = "com.pinyougou.service.SellerService")
 public class SellerServiceImpl implements SellerService {
 
@@ -50,4 +53,35 @@ public class SellerServiceImpl implements SellerService {
             throw new RuntimeException(ex);
         }
     }
+
+    /**
+     * 商家注册信息保存
+     * @param seller
+     */
+    @Override
+    public void save(Seller seller) {
+        try{
+            seller.setStatus("0");
+            seller.setCreateTime(new Date());
+            sellerMapper.insertSelective(seller);
+        }catch(Exception ex){
+            throw new RuntimeException(ex);
+        }
+    }
+
+    /**
+     * 根据ID查询商家信息
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Seller findOne(Serializable id) {
+        try{
+            return  sellerMapper.selectByPrimaryKey(id);
+        }catch(Exception ex){
+            throw new RuntimeException(ex);
+        }
+    }
+
 }
