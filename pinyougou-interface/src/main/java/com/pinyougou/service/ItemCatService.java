@@ -3,6 +3,8 @@ package com.pinyougou.service;
 import com.pinyougou.pojo.ItemCat;
 import pinyougou.conmmon.pojo.PageResult;
 
+import java.util.List;
+
 /**
  * 分类服务接口
  * @author whister
@@ -33,4 +35,11 @@ public interface ItemCatService {
      * @param ids
      */
     void delete(Long[] ids);
+
+    /**
+     * 根据parentId查询
+     * @param parentId
+     * @return
+     */
+    List<ItemCat> findItemCatByParentId(Long parentId);
 }

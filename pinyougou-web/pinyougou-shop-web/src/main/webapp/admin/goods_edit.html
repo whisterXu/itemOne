@@ -14,6 +14,16 @@
 		<link rel="stylesheet" href="/plugins/kindeditor/themes/default/default.css"/>
 		<script src="/plugins/kindeditor/kindeditor-min.js"></script>
 		<script src="/plugins/kindeditor/lang/zh_CN.js"></script>
+
+		<!-- 引入AngularJS相关文件 -->
+		<script src="/plugins/angularjs/angular.min.js"></script>
+		<script src="/js/base.js"></script>
+		<script src="/js/service/baseService.js"></script>
+		<script src="/js/controller/baseController.js"></script>
+		<script src="/js/controller/goodsController.js"></script>
+		<!-- 富文本编辑器 -->
+
+
 		<!-- 正文区域 /-->
 		<script type="text/javascript">
 			var editor;
@@ -23,7 +33,10 @@
 		</script>
 	</head>
 
-	<body class="hold-transition skin-red sidebar-mini">
+	<body 	 ng-app="pinyougou"
+			 ng-controller="goodsController"
+			  ng-init="findItemCatByParentId(0,'itemCat1')"
+			class="hold-transition skin-red sidebar-mini">
 		<!-- 正文区域 -->
 		<section class="content">
 			<div class="box-body">
@@ -38,6 +51,7 @@
 					</ul>
 					<!--tab头/-->
 					<!--tab内容-->
+					{{goods}}
 					<div class="tab-content">
 						<!--表单内容-->
 						<div class="tab-pane active" id="home">
@@ -46,36 +60,57 @@
 								<div class="col-md-10 data">
 									<table>
 										<tr>
-											<td><select class="form-control">
+											<td><select class="form-control"
+														ng-model="goods.category1Id"
+														ng-options="i.id as i.name for i in itemCat1">
+                                                <option value="">====请选择一级分类===</option>
 											</select></td>
-											<td><select class="form-control select-sm"></select></td>
-											<td><select class="form-control select-sm"></select></td>
-											<td>模板ID:19</td>
+											<td><select class="form-control select-sm"
+														ng-model="goods.category2Id"
+														ng-options="i.id as i.name for i in itemCat2">
+                                                <option value="">====请选择二级分类===</option>
+                                            </select></td>
+
+											<td><select class="form-control select-sm"
+														ng-model="goods.category3Id"
+														ng-options="i.id as i.name for i in itemCat3">>
+                                                <option value="">====请选择三级分类===</option>
+                                            </select></td>
+											<td>
+												<input type="text" class="form-control" value="{{goods.typeTemplateId}}" placeholder="类型模板ID"></td>
 										</tr>
 									</table>
 								</div>
-								
+
 								<div class="col-md-2 title">商品名称</div>
 								<div class="col-md-10 data">
-									<input type="text" class="form-control" placeholder="商品名称"
+									<input type="text"
+										   ng-model="goods.goodsName"
+										   class="form-control" placeholder="商品名称"
 										value="">
 								</div>
 	
 								<div class="col-md-2 title">品牌</div>
 								<div class="col-md-10 data">
-									<select class="form-control"></select>
+									<select class="form-control"
+											ng-model="goods.id"
+											ng-options="b.id as b.text for b in brandIds">
+										<option value=""></option>
+									</select>
 								</div>
 	
 								<div class="col-md-2 title">副标题</div>
 								<div class="col-md-10 data">
 									<input type="text" class="form-control" placeholder="副标题"
-										value="">
+										ng-model="goods.caption"  value="">
 								</div>
 	
 								<div class="col-md-2 title">价格</div>
 								<div class="col-md-10 data">
 									<div class="input-group">
-										<span class="input-group-addon">¥</span> <input type="text"
+										<span class="input-group-addon">¥</span>
+										<input type="text"
+											   ng-model="goods.price"
 											class="form-control" placeholder="价格" value="">
 									</div>
 								</div>
@@ -89,12 +124,16 @@
 								<div class="col-md-2 title rowHeight2x">包装列表</div>
 								<div class="col-md-10 data rowHeight2x">
 	
-									<textarea rows="4" class="form-control" placeholder="包装列表"></textarea>
+									<textarea rows="4" class="form-control"
+											  ng-model="goods.goodsDesc.packageList"
+											  placeholder="包装列表"></textarea>
 								</div>
 	
 								<div class="col-md-2 title rowHeight2x">售后服务</div>
 								<div class="col-md-10 data rowHeight2x">
-									<textarea rows="4" class="form-control" placeholder="售后服务"></textarea>
+									<textarea rows="4" class="form-control"
+											  ng-model="goods.goodsDesc.saleService"
+											  placeholder="售后服务"></textarea>
 								</div>
 							
 							</div>
@@ -105,10 +144,11 @@
 							<div class="row data-type">
 								<!-- 颜色图片 -->
 								<div class="btn-group">
-									<button type="button" class="btn btn-default" title="新建"
-										data-target="#uploadModal" data-toggle="modal">
-										<i class="fa fa-file-o"></i> 新建
-									</button>
+                                    <button type="button" class="btn btn-default" title="新建"
+                                            ng-click="picEntity={}"
+                                            data-target="#uploadModal" data-toggle="modal">
+                                        <i class="fa fa-file-o"></i> 新建
+                                    </button>
 	
 								</div>
 	
@@ -122,12 +162,14 @@
 											<th class="sorting">操作</th>
 									</thead>
 									<tbody>
-										<tr>
-											<td></td>
-											<td><img alt="" src="" width="100px" height="100px">
-											</td>
-											<td>
-												<button type="button" class="btn btn-default" title="删除">
+										<tr ng-repeat="pic in goods.goodsDesc.itemImages">
+											<td>{{pic.color}}</td>
+											<td><img alt="" src="{{pic.url}}" width="100px" height="100px">
+                                        </td>
+                                            <td>
+												<button type="button"
+                                                        ng-click="removePic($index)"
+                                                        class="btn btn-default" title="删除">
 													<i class="fa fa-trash-o"></i> 删除
 												</button>
 											</td>
@@ -141,18 +183,15 @@
 						<!--扩展属性-->
 						<div class="tab-pane" id="customAttribute">
 							<div class="row data-type">
-								<div>
-									<div class="col-md-2 title">扩展属性1</div>
+								<div ng-repeat="c in goods.goodsDesc.customAttributeItems">
+									<div class="col-md-2 title">{{c.text}}</div>
 									<div class="col-md-10 data">
-										<input class="form-control" placeholder="扩展属性1">
+										<input class="form-control"
+                                               ng-model="c.value"
+                                               placeholder="{{c.text}}">
 									</div>
 								</div>
-								<div>
-									<div class="col-md-2 title">扩展属性2</div>
-									<div class="col-md-10 data">
-										<input class="form-control" placeholder="扩展属性2">
-									</div>
-								</div>
+                                {{goods.goodsDesc.customAttributeItems}}
 							</div>
 						</div>
 	
@@ -168,30 +207,17 @@
 							<div>
 	
 								<div class="row data-type">
-	
-									<div>
-										<div class="col-md-2 title">屏幕尺寸</div>
+						<!-- 格式:[{"id":27,"text":"网络",options:[{},{}]},{"id":32,"text":"机身内存",options:[{},{}]}] -->
+									<div  ng-repeat="spec in specList">
+										<div class="col-md-2 title" ng-model="s.attributeValue">{{spec.text}}</div>
 										<div class="col-md-10 data">
-	
-											<span> <input type="checkbox">4.0
-											</span> <span> <input type="checkbox">4.5
-											</span> <span> <input type="checkbox">5.0
+
+											<span  ng-repeat="so in spec.options" >
+												<input type="checkbox"
+												ng-click="updateSelect($even,s.text,so.optionName)">{{so.optionName}}
 											</span>
-	
 										</div>
 									</div>
-									<div>
-										<div class="col-md-2 title">网络制式</div>
-										<div class="col-md-10 data">
-	
-											<span> <input type="checkbox">2G
-											</span> <span> <input type="checkbox">3G
-											</span> <span> <input type="checkbox">4G
-											</span>
-	
-										</div>
-									</div>
-	
 								</div>
 	
 	
@@ -261,7 +287,7 @@
 				</div>
 			</div>
 			<div class="btn-toolbar list-toolbar">
-				<button class="btn btn-primary">
+				<button class="btn btn-primary" ng-click="saveOrUpdate()">
 					<i class="fa fa-save"></i>保存
 				</button>
 				<button class="btn btn-default">返回列表</button>
@@ -278,12 +304,16 @@
 							aria-hidden="true">×</button>
 						<h3 id="myModalLabel">上传商品图片</h3>
 					</div>
+                    {{picEntity}}
 					<div class="modal-body">
 	
 						<table class="table table-bordered table-striped">
 							<tr>
 								<td>颜色</td>
-								<td><input class="form-control" placeholder="颜色"></td>
+								<!-- 绑定颜色数据 -->
+								<td><input class="form-control"
+										   ng-model="picEntity.color"
+										   placeholder="颜色"></td>
 							</tr>
 							<tr>
 								<td>商品图片</td>
@@ -291,8 +321,10 @@
 									<table>
 										<tr>
 											<td><input type="file" id="file" />
-												<button class="btn btn-primary" type="button">上传</button></td>
-											<td><img src="" width="200px" height="200px"></td>
+												<button class="btn btn-primary"
+														ng-click="upload()"
+														type="button">上传</button></td>
+											<td><img src="{{picEntity.url}}" width="200px" height="200px"></td>
 										</tr>
 									</table>
 								</td>
@@ -301,6 +333,7 @@
 					</div>
 					<div class="modal-footer">
 						<button class="btn btn-success" data-dismiss="modal"
+                                ng-click="addPic()"
 							aria-hidden="true">保存</button>
 						<button class="btn btn-default" data-dismiss="modal"
 							aria-hidden="true">关闭</button>

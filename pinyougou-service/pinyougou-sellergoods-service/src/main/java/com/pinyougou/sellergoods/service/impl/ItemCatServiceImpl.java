@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import pinyougou.conmmon.pojo.PageResult;
 
+import java.util.List;
+
 @Service(interfaceName = "com.pinyougou.service.ItemCatService")
 @Transactional
 public class ItemCatServiceImpl implements ItemCatService {
@@ -73,6 +75,21 @@ public class ItemCatServiceImpl implements ItemCatService {
             itemCatMapper.deleteByCondition(ids);
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     *  根据parentId 查询
+     * @param parentId
+     * @return List<ItemCat>
+     */
+    @Override
+    public List<ItemCat> findItemCatByParentId(Long parentId) {
+        try{
+            List<ItemCat> itemCatList = itemCatMapper.findItemCatByParentId(parentId);
+            return itemCatList;
+        }catch(Exception ex){
+            throw new RuntimeException(ex);
         }
     }
 }

@@ -92,4 +92,15 @@ public class TypeTemplateServiceImpl implements TypeTemplateService {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * 根据typeTemplate id主键查询品牌
+     * @param id
+     * @return TypeTemplate
+     */
+    @Override
+    public TypeTemplate findOne(Long id) {
+        return typeTemplateMapper.selectByPrimaryKey(id);
+    }
+
 }

@@ -44,4 +44,11 @@ public interface TypeTemplateService {
      * @return
      */
     List<TypeTemplate> findTypeTemplateList();
+
+    /**
+     *  根据主键查询品牌
+     * @param id
+     * @return TypeTemplate
+     */
+    TypeTemplate findOne(Long id);
 }

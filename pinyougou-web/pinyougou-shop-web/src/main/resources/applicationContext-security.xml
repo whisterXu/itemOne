@@ -48,14 +48,15 @@
         <security:logout logout-url="/loginOut" logout-success-url="/shoplogin.html"/>
     </security:http>
 
-    <!-- 配置认证管理器 -->
+   <!-- ############## 配置认证管理器 ############## -->
     <security:authentication-manager>
         <!-- 配置认证提供者 -->
-        <security:authentication-provider
-                user-service-ref="userDetailsService" />
+        <security:authentication-provider user-service-ref="userDetailsService" >
+            <!-- 设置加密方式 -->
+            <security:password-encoder ref="bCryptPasswordEncoder"/>
+        </security:authentication-provider>
     </security:authentication-manager>
-
-
+    <bean id="bCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
 
 
     <!-- ############## 配置dubbo服务消费者 ############## -->
@@ -72,8 +73,5 @@
           class="com.pinyougou.shop.service.UserDetailsServiceImpl">
         <property name="sellerService" ref="sellerService"/>
     </bean>
-
-
-
 
 </beans>

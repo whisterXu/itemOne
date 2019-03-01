@@ -16,7 +16,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/typeTemplate")
-public class typeTemplateController {
+public class TypeTemplateController {
 
     @Reference(timeout = 10000)
     private TypeTemplateService typeTemplateService;

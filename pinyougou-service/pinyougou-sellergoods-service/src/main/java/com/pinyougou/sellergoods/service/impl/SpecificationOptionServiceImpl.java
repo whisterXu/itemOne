@@ -33,4 +33,21 @@ public class SpecificationOptionServiceImpl implements SpecificationOptionServic
         so.setSpecId(id);
         return specificationOptionMapper.select(so);
     }
+
+
+    /**
+     * 根据模板specId查询规格选项
+     * 返回lList<SpecificationOption>用来组装 [{"id":33,"text":"电视屏幕尺寸"}]  数据库保存的格式
+     * @param specificationOption
+     * @return List<SpecificationOption>
+     */
+    @Override
+    public List<SpecificationOption> select(SpecificationOption specificationOption) {
+        try{
+            return specificationOptionMapper.select(specificationOption);
+        }catch(Exception ex){
+            throw new RuntimeException(ex);
+        }
+    }
+
 }

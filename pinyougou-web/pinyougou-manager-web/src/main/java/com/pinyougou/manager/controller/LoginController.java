@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 显示登录用户名的控制器
+ * @author whister
+ */
 @RestController
 public class LoginController{
 
