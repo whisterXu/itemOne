@@ -106,6 +106,11 @@ public class GoodsServiceImpl implements GoodsService {
         }
     }
 
+    @Override
+    public void updateStatus(Long[] ids,String auditStatus,String columnName) {
+        goodsMapper.updateStatus(ids,auditStatus,columnName);
+    }
+
     /**
      *  带条件分页查询
      * @param goods

@@ -24,5 +24,10 @@ public interface GoodsService {
      */
     void save(Goods goods);
 
-
+    /**
+     *  修改商品状态   审核商品
+     * @param auditStatus
+     * @param ids
+     */
+    void updateStatus(Long[] ids,String auditStatus,String columnName);
 }
