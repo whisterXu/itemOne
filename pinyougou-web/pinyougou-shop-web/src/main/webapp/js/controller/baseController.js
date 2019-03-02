@@ -16,8 +16,7 @@ app.controller("baseController", function($scope){
     // 定义重新加载数据方法
     $scope.reload = function(){
         // 分页查询(带查询条件)
-        $scope.search($scope.paginationConf.currentPage,
-            $scope.paginationConf.itemsPerPage);
+        $scope.search($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
     };
 
     // 定义数组封装用户选择的id
