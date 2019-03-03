@@ -60,4 +60,40 @@ public class GoodsController {
         }
         return false;
     }
+
+    /**
+     * 修改上下架状态码 IsMarketable 实现上下架功能
+     * @param ids
+     * @param isMarketable
+     * @return
+     */
+    @GetMapping("/updateIsMarketable")
+    public boolean updateIsMarketable(Long[] ids ,String isMarketable){
+        try{
+            //调用goods服务层接口方法,实现了方法复用 (运营商管理后台和商家管理后台共同调用了同一个服务层方法)
+            goodsService.updateStatus(ids,isMarketable,"is_marketable");
+            return true;
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     *  删除商品,修改商品状态
+     * @param auditStatus
+     * @return
+     */
+    @GetMapping("/delete")
+    public boolean delete(Long[] ids ,String auditStatus){
+        try {
+//            调用服务接口的方法
+            goodsService.updateStatus(ids,auditStatus,"is_delete");
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

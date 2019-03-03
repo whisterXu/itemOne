@@ -39,13 +39,19 @@
 							<button type="button" class="btn btn-default" title="新建">
 								<i class="fa fa-file-o"></i> 新建
 							</button>
-							<button type="button" class="btn btn-default" title="删除">
+							<button type="button"
+									ng-click="delete('0')"
+									class="btn btn-default" title="删除">
 								<i class="fa fa-trash-o"></i> 删除
 							</button>
-							<button type="button" class="btn btn-default" title="上架">
+							<button type="button"
+									ng-click="updateIsMarketable('1')"
+									class="btn btn-default" title="上架">
 								<i class="fa fa-check"></i> 上架
 							</button>
-							<button type="button" class="btn btn-default" title="下架"
+							<button type="button"
+									ng-click="updateIsMarketable('0')"
+									class="btn btn-default" title="下架"
 								onclick='confirm("你确认要下架吗？")'>
 								<i class="fa fa-ban"></i> 下架
 							</button>
@@ -82,19 +88,21 @@
 							<th class="sorting">一级分类</th>
 							<th class="sorting">二级分类</th>
 							<th class="sorting">三级分类</th>
-							<th class="sorting">状态</th>
+							<th class="sorting">上架状态</th>
+							<th class="sorting">审核状态</th>
 							<th class="text-center">操作</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr ng-repeat="entity in dataList">
-							<td><input type="checkbox"></td>
+							<td><input type="checkbox" ng-click="updateSelection($event,entity.id)"></td>
 							<td>{{entity.id}}</td>
 							<td>{{entity.goodsName}}</td>
 							<td>{{entity.price}}</td>
 							<td>{{entity.category1Name}}</td>
 							<td>{{entity.category2Name}}</td>
 							<td>{{entity.category3Name}}</td>
+							<td>{{entity.isMarketable == 1 ? '已上架':'未上架'}}</td>
 							<td>
 								<span> {{status[entity.auditStatus]}}  </span>
 							</td>

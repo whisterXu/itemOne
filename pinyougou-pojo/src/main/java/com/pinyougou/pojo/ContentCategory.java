@@ -1,11 +1,11 @@
 package com.pinyougou.pojo;
 
-import java.io.Serializable;
-
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * 广告分类
+ * @author whister
  */
 @Table(name="tb_content_category")
 public class ContentCategory implements Serializable{

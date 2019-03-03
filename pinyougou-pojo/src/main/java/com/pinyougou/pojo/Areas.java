@@ -1,10 +1,10 @@
 package com.pinyougou.pojo;
 
+import javax.persistence.*;
 import java.io.Serializable;
 
-import javax.persistence.*;
-
-/** 区域实体*/
+/** 区域实体
+ * @author whister*/
 @Table(name="tb_areas")
 public class Areas implements Serializable{
 

@@ -1,4 +1,4 @@
-package com.pinyougou.shop.controller;
+package com.pinyougou.manager.controller;
 
 import org.apache.commons.io.FilenameUtils;
 import org.csource.fastdfs.ClientGlobal;
@@ -29,18 +29,22 @@ public class UploadController {
         Map<String, Object> data = new HashMap<>(16);
         data.put("status", 500);
         try {
-            /** 加载配置文件，产生该文件绝对路径 */
-            String conf_filename = this.getClass()
-                    .getResource("/fastdfs_client.conf").getPath();
-            /** 初始化客户端全局对象 */
+            // 加载配置文件，产生该文件绝对路径
+            String conf_filename = this.getClass().getResource("/fastdfs_client.conf").getPath();
+            // 初始化客户端全局对象 
             ClientGlobal.init(conf_filename);
-            /** 创建存储客户端对象 */
+            // 创建存储客户端对象 
             StorageClient storageClient = new StorageClient();
-            /** 获取原文件名 */
-            String originalFilename =
-                    multipartFile.getOriginalFilename();
-            /** 上传文件到FastDFS服务器 */
-            String[] arr = storageClient.upload_file(multipartFile.getBytes(), FilenameUtils.getExtension(originalFilename), null);
+
+            // 获取原文件名,获取文件后缀名
+            String originalFilename = multipartFile.getOriginalFilename();
+            String fileExtensionName = FilenameUtils.getExtension(originalFilename);
+
+            //获得文件的字节数组
+            byte[] fileBytes = multipartFile.getBytes();
+
+            // 上传文件到FastDFS服务器 
+            String[] arr = storageClient.upload_file(fileBytes, fileExtensionName, null);
             /** 拼接返回的 url 和 ip 地址，拼装成完整的 url */
             StringBuilder url = new StringBuilder(fileServerUrl);
             for (String str : arr){

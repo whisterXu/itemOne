@@ -1,10 +1,14 @@
 package com.pinyougou.service;
 
 import com.pinyougou.pojo.Content;
-import java.util.List;
+import pinyougou.conmmon.pojo.PageResult;
+
 import java.io.Serializable;
+import java.util.List;
+
 /**
  * ContentService 服务接口
+ * @author whister
  * @date 2019-02-28 20:43:34
  * @version 1.0
  */
@@ -25,10 +29,18 @@ public interface ContentService {
 	/** 根据主键id查询 */
 	Content findOne(Serializable id);
 
-	/** 查询全部 */
+	/**
+	 *  查询全部category
+	 * @retur List<Content>
+	 */
 	List<Content> findAll();
 
-	/** 多条件分页查询 */
-	List<Content> findByPage(Content content, int page, int rows);
+	/**
+	 *  分页查询
+	 * @param page
+	 * @param rows
+	 * @return PageResult
+	 */
+	PageResult findByPage(Integer page, Integer rows);
 
 }

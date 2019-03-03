@@ -6,6 +6,7 @@ import com.pinyougou.pojo.Areas;
 
 /**
  * AreasMapper 数据访问接口
+ * @author whister
  * @date 2019-02-28 20:45:31
  * @version 1.0
  */

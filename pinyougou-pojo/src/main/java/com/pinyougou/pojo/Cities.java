@@ -1,10 +1,10 @@
 package com.pinyougou.pojo;
 
+import javax.persistence.*;
 import java.io.Serializable;
 
-import javax.persistence.*;
-
-/** 城市实体 */
+/** 城市实体
+ * @author whister*/
 @Table(name="tb_cities")
 public class Cities implements Serializable{
  

@@ -41,13 +41,13 @@ public class SpecificationServiceImpl implements SpecificationService {
      */
     @Override
     public PageResult findByPage(Specification specification, Integer currentPage, Integer rows) {
-        PageInfo<Specification> PageInfo = PageHelper.startPage(currentPage, rows).doSelectPageInfo(new ISelect() {
+        PageInfo<Specification> pageInfo = PageHelper.startPage(currentPage, rows).doSelectPageInfo(new ISelect() {
             @Override
             public void doSelect() {
                 specificationMapper.findByCondition(specification);
             }
         });
-        return new PageResult(PageInfo.getTotal(),PageInfo.getList());
+        return new PageResult(pageInfo.getTotal(),pageInfo.getList());
     }
 
     /**

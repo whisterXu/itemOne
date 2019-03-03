@@ -16,6 +16,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author whister
+ */
 @Service(interfaceName = "com.pinyougou.service.GoodsService")
 @Transactional
 public class GoodsServiceImpl implements GoodsService {

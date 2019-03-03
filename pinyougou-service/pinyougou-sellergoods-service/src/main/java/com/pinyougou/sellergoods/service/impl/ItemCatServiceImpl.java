@@ -13,6 +13,9 @@ import pinyougou.conmmon.pojo.PageResult;
 
 import java.util.List;
 
+/**
+ * @author whister
+ */
 @Service(interfaceName = "com.pinyougou.service.ItemCatService")
 @Transactional
 public class ItemCatServiceImpl implements ItemCatService {

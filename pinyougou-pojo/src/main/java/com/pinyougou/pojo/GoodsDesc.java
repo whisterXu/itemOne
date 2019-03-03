@@ -1,9 +1,13 @@
 package com.pinyougou.pojo;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 
-import javax.persistence.*;
-
+/**
+ * @author whister
+ */
 @Table(name="tb_goods_desc")
 public class GoodsDesc implements Serializable{
 	private static final long serialVersionUID = -7405298140497362200L;

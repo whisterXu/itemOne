@@ -1,10 +1,12 @@
 package com.pinyougou.pojo;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.*;
-
+/**
+ * @author whister
+ */
 @Table(name="tb_freight_template")
 public class FreightTemplate implements Serializable{
     
