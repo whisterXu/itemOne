@@ -20,17 +20,6 @@
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 
-	<!--&lt;!&ndash; 配置Spring的核心监听器 &ndash;&gt;-->
-	<!--<listener>-->
-		<!--<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>-->
-	<!--</listener>-->
-	<!--&lt;!&ndash; 配置Spring加载文件 &ndash;&gt;-->
-	<!--<context-param>-->
-		<!--<param-name>contextConfigLocation</param-name>-->
-		<!--<param-value>classpath:applicationContext*.xml</param-value>-->
-	<!--</context-param>-->
-
-
 	<!-- 配置全局编码过滤器 -->
 	<filter>
 		<filter-name>characterEncodingFilter</filter-name>

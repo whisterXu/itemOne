@@ -8,6 +8,7 @@ import com.pinyougou.mapper.ContentMapper;
 import com.pinyougou.pojo.Content;
 import com.pinyougou.service.ContentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import pinyougou.conmmon.pojo.PageResult;
 import tk.mybatis.mapper.entity.Example;
 
@@ -25,6 +26,8 @@ public class ContentServiceImpl implements ContentService {
 
 	@Autowired
 	private ContentMapper contentMapper;
+	@Autowired
+	private RedisTemplate redisTemplate;
 
 	/** 添加方法 */
 	@Override
@@ -112,6 +115,35 @@ public class ContentServiceImpl implements ContentService {
 		}catch (Exception ex){
 			throw new RuntimeException(ex);
 		}
+	}
+
+	/**
+	 * 通过CategoryId查询广告内容显示在在首页
+	 * @param categoryId
+	 * @return  List<Content>
+	 */
+    @Override
+    public List<Content> findCategoryByCategoryId(Long categoryId) {
+		//定义广告数据
+		List<Content> contentList = null;
+		//从Redis中读取数据
+		contentList = (List<Content>) redisTemplate.boundValueOps("content").get();
+		if (contentList != null && contentList.size() > 0){
+			System.out.println("=============从redis中读取数据===========");
+			return contentList;
+		}
+
+		Example example = new Example(Content.class);
+		Example.Criteria criteria = example.createCriteria();
+		criteria.andEqualTo("status",categoryId);
+		example.orderBy("sortOrder").asc();
+
+		//查询广告数据
+		contentList = contentMapper.selectByExample(example);
+		System.out.println("=============从mysql中读取数据===========");
+		//存入redis
+		redisTemplate.boundValueOps("content").set(contentList);
+		return contentList;
 	}
 
 }

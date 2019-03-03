@@ -43,4 +43,10 @@ public interface ContentService {
 	 */
 	PageResult findByPage(Integer page, Integer rows);
 
+	/**
+     * 通过CategoryId查询Category数据
+	 * @param categoryId
+	 * @return  List<Content>
+	 */
+    List<Content> findCategoryByCategoryId(Long categoryId);
 }

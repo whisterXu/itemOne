@@ -1,5 +1,10 @@
 /** 定义首页控制器层 */
 app.controller("indexController", function($scope, baseService){
 
-
+    $scope.findCategoryByCategoryId = function (id) {
+        baseService.sendGet("/findCategoryByCategoryId?categoryId="+id).then(function (response) {
+            $scope.contentList = response.data;
+            // alert("取到了数据:" + $scope.contentList);
+        })
+    }
 });
