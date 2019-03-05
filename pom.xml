@@ -14,6 +14,7 @@
         <module>pinyougou-common</module>
         <module>pinyougou-service</module>
         <module>pinyougou-web</module>
+        <module>pinyougou-solr-util</module>
     </modules>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
@@ -48,6 +49,7 @@
         <spring.data.redis.version>1.8.6.RELEASE</spring.data.redis.version>
         <cas.client.version>3.4.1</cas.client.version>
         <solrj.version>4.10.3</solrj.version>
+        <spring-data-solr.version>1.5.6.RELEASE</spring-data-solr.version>
         <ik.version>2012_u6</ik.version>
         <slf4j.version>1.7.5</slf4j.version>
         <fastjson.version>1.2.29</fastjson.version>
@@ -220,10 +222,18 @@
                 <artifactId>jedis</artifactId>
                 <version>${jedis.version}</version>
             </dependency>
+            <!-- spring-data-redis -->
             <dependency>
                 <groupId>org.springframework.data</groupId>
                 <artifactId>spring-data-redis</artifactId>
                 <version>${spring.data.redis.version}</version>
+            </dependency>
+
+            <!-- spring-data-solr -->
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-solr</artifactId>
+                <version>${spring-data-solr.version}</version>
             </dependency>
             <!-- activeMQ依赖 -->
             <dependency>

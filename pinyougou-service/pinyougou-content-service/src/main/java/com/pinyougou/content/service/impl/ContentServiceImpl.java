@@ -34,6 +34,8 @@ public class ContentServiceImpl implements ContentService {
 	public void save(Content content){
 		try {
 			contentMapper.insertSelective(content);
+			//清空redis
+			redisTemplate.delete("content");
 		}catch (Exception ex){
 			throw new RuntimeException(ex);
 		}
@@ -44,6 +46,8 @@ public class ContentServiceImpl implements ContentService {
 	public void update(Content content){
 		try {
 			contentMapper.updateByPrimaryKeySelective(content);
+            //清空redis
+            redisTemplate.delete("content");
 		}catch (Exception ex){
 			throw new RuntimeException(ex);
 		}
@@ -71,6 +75,8 @@ public class ContentServiceImpl implements ContentService {
 			criteria.andIn("id", Arrays.asList(ids));
 			// 根据示范对象删除
 			contentMapper.deleteByExample(example);
+            //清空redis
+            redisTemplate.delete("content");
 		}catch (Exception ex){
 			throw new RuntimeException(ex);
 		}
