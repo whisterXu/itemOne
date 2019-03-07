@@ -2,6 +2,8 @@
 <html>
 
 	<head>
+		<!--定义页面中所有相对链接的基准 URL -->
+		<base href="/"/>
 		<meta charset="utf-8"/>
 		<title>品优购搜索</title>
 		<link rel="icon" href="assets/img/favicon.ico"/>
@@ -14,12 +16,20 @@
 		<script src="/js/base.js"></script>
 		<script src="/js/service/baseService.js"></script>
 		<script src="/js/controller/searchController.js"></script>
-
 	</head>
+
+	<script type="text/javascript">
+        /** 配置位置提供者 */
+        app.config(function($locationProvider){
+            $locationProvider.html5Mode(true);
+        });
+	</script>
+
+
 
 	<body ng-app="pinyougou"
 		  ng-controller="searchController"
-			ng-init="search()">
+			ng-init="getKeyword()">
 		<!-- 头部栏位 -->
 		<!--页面顶部-->
 		<div id="nav-bottom">
@@ -76,13 +86,14 @@
 								<div class="search">
 									<form action="" class="sui-form form-inline">
 										<!--searchAutoComplete-->
-										{{searchParams}}
+
 										<div class="input-append">
 											<input type="text" id="autocomplete"
+												   ng-keyup="myKeyup($event)"
 												   ng-model="searchParams.keyword"
 												   type="text" class="input-error input-xxlarge" />
 											<button class="sui-btn btn-xlarge btn-danger" type="button"
-											ng-click="search()">搜索</button>
+											ng-click="searchParams.page=1;search();">搜索</button>
 										</div>
 									</form>
 								</div>
@@ -143,20 +154,39 @@
 
 	<!--list-content-->
 	<div class="main">
+		{{searchParams}}
 		<div class="py-container">
 			<!--bread-->
 			<div class="bread">
 				<ul class="fl sui-breadcrumb">
+					<li ng-if="showKeyword">
+						按"<span style="color: red;">{{searchKeyword}}</span>"关键字，搜索到 <b>{{resultMap.total}}</b>条记录.
+					</li>
+
 					<li>
-						<a href="#">全部结果</a>
+						<a href="#">全部结果 ></a>
 					</li>
 				</ul>
-				<ul class="tags-choose">
-					<li class="tag">全网通
+				<ul class="tags-choose" >
+					<li class="tag" ng-if="searchParams.category != ''"
+						ng-click="removeSearchItem('category')">
+						商品分类:{{searchParams.category}}
 						<i class="sui-icon icon-tb-close"></i>
 					</li>
-					<li class="tag">63G
-						<i class="sui-icon icon-tb-close"></i>
+					<li class="tag" ng-if="searchParams.brand != ''">
+						品牌：{{searchParams.brand}}
+						<i class="sui-icon icon-tb-close"
+						   ng-click="removeSearchItem('brand')"></i>
+					</li>
+					<li class="tag" ng-repeat="(key,value) in searchParams.spec">
+						{{key}} : {{value}}
+						<i class="sui-icon icon-tb-close"
+						   ng-click="removeSearchItem('key')"></i>
+					</li>
+					<li class="tag" ng-if="searchParams.price != ''"
+						ng-click="removeSearchItem('price')">
+						价格：{{searchParams.price}}
+						<i  class="sui-icon icon-tb-close"></i>
 					</li>
 				</ul>
 				<div class="clearfix"></div>
@@ -164,9 +194,9 @@
 			<!--selector-->
 			<div class="clearfix selector">
 				<div class="type-wrap">
-					<div class="fl key">商品分类</div>
+					<div class="fl key" >商品分类</div>
 					<div class="fl value">
-						<a href="javascript:;" style="margin-right: 10px">手机</a>
+						<a href="javascript:;" style="margin-right: 10px"  ng-click="addSearchItem('category','手机')">手机</a>
 					</div>
 					<div class="fl ext"></div>
 				</div>
@@ -174,12 +204,12 @@
 					<div class="fl key brand">品牌</div>
 					<div class="value logos">
 						<ul class="logo-list">
-							<li style="cursor: pointer"><img src="img/_/phone01.jpg"/></li>
-							<li style="cursor: pointer"><img src="img/_/phone02.jpg"/></li>
-							<li style="cursor: pointer"><img src="img/_/phone03.jpg"/></li>
-							<li style="cursor: pointer"><img src="img/_/phone04.jpg"/></li>
-							<li style="cursor: pointer"><img src="img/_/phone05.jpg"/></li>
-							<li style="cursor: pointer"><img src="img/_/phone06.jpg"/></li>
+							<li style="cursor: pointer" ng-click="addSearchItem('brand','苹果')"><img src="img/_/phone01.jpg"/></li>
+							<li style="cursor: pointer" ng-click="addSearchItem('brand','三星')"><img src="img/_/phone02.jpg"/></li>
+							<li style="cursor: pointer" ng-click="addSearchItem('brand','华为')"><img src="img/_/phone03.jpg"/></li>
+							<li style="cursor: pointer" ng-click="addSearchItem('brand','小米')"><img src="img/_/phone04.jpg"/></li>
+							<li style="cursor: pointer" ng-click="addSearchItem('brand','OPPO')"><img src="img/_/phone05.jpg"/></li>
+							<li style="cursor: pointer" ng-click="addSearchItem('brand','VIVO')"><img src="img/_/phone06.jpg"/></li>
 						</ul>
 					</div>
 					<div class="ext">
@@ -191,22 +221,22 @@
 					<div class="fl value">
 						<ul class="type-list">
 							<li>
-								<a>移动3G</a>
+								<a ng-click="addSearchItem('网络','移动3G')">移动3G</a>
 							</li>
 							<li>
-								<a>联通3G</a>
+								<a ng-click="addSearchItem('网络','联通3G')">联通3G</a>
 							</li>
 							<li>
-								<a>电信3G</a>
+								<a ng-click="addSearchItem('网络','电信3G')">电信3G</a>
 							</li>
 							<li>
-								<a>移动4G</a>
+								<a ng-click="addSearchItem('网络','移动4G')">移动4G</a>
 							</li>
 							<li>
-								<a>联通4G</a>
+								<a ng-click="addSearchItem('网络','联通4G')">联通4G</a>
 							</li>
 							<li>
-								<a>电信4G</a>
+								<a ng-click="addSearchItem('网络','电信4G')">电信4G</a>
 							</li>
 						</ul>
 					</div>
@@ -217,16 +247,16 @@
 					<div class="fl value">
 						<ul class="type-list">
 							<li>
-								<a>16G</a>
+								<a ng-click="addSearchItem('机身内存','16G')">16G</a>
 							</li>
 							<li>
-								<a>32G</a>
+								<a ng-click="addSearchItem('机身内存','32G')">32G</a>
 							</li>
 							<li>
-								<a>64G</a>
+								<a ng-click="addSearchItem('机身内存','64G')">64G</a>
 							</li>
 							<li>
-								<a>128G</a>
+								<a ng-click="addSearchItem('机身内存','128G')">128G</a>
 							</li>
 						</ul>
 					</div>
@@ -237,22 +267,22 @@
 					<div class="fl value">
 						<ul class="type-list">
 							<li>
-								<a>0-500元</a>
+								<a ng-click="addSearchItem('price','0-500')">0-500元</a>
 							</li>
 							<li>
-								<a>500-1000元</a>
+								<a ng-click="addSearchItem('price','500-1000')">500-1000元</a>
 							</li>
 							<li>
-								<a>1000-1500元</a>
+								<a ng-click="addSearchItem('price','1000-1500')">1000-1500元</a>
 							</li>
 							<li>
-								<a>1500-2000元</a>
+								<a ng-click="addSearchItem('price','1500-2000')">1500-2000元</a>
 							</li>
 							<li>
-								<a>2000-3000元 </a>
+								<a ng-click="addSearchItem('price','2000-3000')">2000-3000元 </a>
 							</li>
 							<li>
-								<a>3000元以上</a>
+								<a ng-click="addSearchItem('price','3000-*')">3000元以上</a>
 							</li>
 						</ul>
 					</div>
@@ -272,16 +302,16 @@
 								<a href="#">销量</a>
 							</li>
 							<li>
-								<a href="#">新品</a>
+								<a href="javaScript:;" ng-click="sortSearch('updateTime','ASC')">新品</a>
 							</li>
 							<li>
 								<a href="#">评价</a>
 							</li>
 							<li>
-								<a href="#">价格↑</a>
+								<a href="javaScript:;" ng-click="sortSearch('price','ASC')">价格↑</a>
 							</li>
 							<li>
-								<a href="#">价格↓</a>
+								<a href="javaScript:;"  ng-click="sortSearch('price','DESC')">价格↓</a>
 							</li>
 						</ul>
 					</div>
@@ -301,8 +331,8 @@
 											<i>{{item.price}}</i>
 										</strong>
 								</div>
-								<div class="attr">
-									<em>{{item.title}}</em>
+								<div class="attr" ng-bind-html="trustHtml(item.title)">
+									<em></em>
 								</div>
 								<div class="cu">
 									<em></em>
@@ -317,39 +347,30 @@
 								</div>
 							</div>
 						</li>
-
 					</ul>
 				</div>
 				<div class="fr page">
 					<div class="sui-pagination pagination-large">
 						<ul>
-							<li class="prev disabled">
-								<a href="#">«上一页</a>
+							<li class="prev {{searchParams.page == 1 ? 'disabled':''}}">
+								<a href="javaScript:;" ng-click="pageSearch(searchParams.page - 1)">«上一页</a>
 							</li>
-							<li class="active">
-								<a href="#">1</a>
+
+							<li class="dotted" ng-if="firstDot"><span>...</span></li>
+							<li class="{{searchParams.page == p ? 'active' : ''}}"
+                                ng-repeat="p in pageNum">
+								<a href="javaScript:;" ng-click="pageSearch(p)">{{p}}</a>
 							</li>
-							<li>
-								<a href="#">2</a>
-							</li>
-							<li>
-								<a href="#">3</a>
-							</li>
-							<li>
-								<a href="#">4</a>
-							</li>
-							<li>
-								<a href="#">5</a>
-							</li>
-							<li class="dotted"><span>...</span></li>
-							<li class="next">
-								<a href="#">下一页»</a>
+							<li class="dotted" ng-if="lastDot"><span>...</span></li>
+
+							<li class="next {{searchParams.page == resultMap.totalPages ? 'disabled':''}}" >
+								<a href="javaScript:;"  ng-click="pageSearch(searchParams.page + 1)">下一页»</a>
 							</li>
 						</ul>
-						<div><span>共10页&nbsp;</span><span>
+						<div><span>共{{resultMap.totalPages}}页&nbsp;</span><span>
       到第
-      <input type="text" class="page-num">
-      页 <button class="page-confirm" onclick="alert(1)">确定</button></span></div>
+      <input type="text" class="page-num" ng-model="jumpPage">
+      页 <button class="page-confirm"  ng-click="pageSearch(jumpPage)">确定</button></span></div>
 					</div>
 				</div>
 			</div>

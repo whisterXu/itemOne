@@ -6,5 +6,10 @@ app.controller("indexController", function($scope, baseService){
             $scope.contentList = response.data;
             // alert("取到了数据:" + $scope.contentList);
         })
+    };
+
+    $scope.search = function () {
+        var keyword = $scope.searchParams.keyword ? $scope.searchParams.keyword : '';
+        location.href="http://search.pinyougou.com?keyword=" + keyword;
     }
 });

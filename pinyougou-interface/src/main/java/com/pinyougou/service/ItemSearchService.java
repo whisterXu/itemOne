@@ -2,6 +2,10 @@ package com.pinyougou.service;
 
 import java.util.Map;
 
+/**
+ * 搜索商品服务接口
+ * @author whister
+ */
 public interface ItemSearchService {
 
     /**

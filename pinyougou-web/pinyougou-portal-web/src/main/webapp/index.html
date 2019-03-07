@@ -70,9 +70,14 @@
 							<form action="" class="sui-form form-inline">
 								<!--searchAutoComplete-->
 								<div class="input-append">
-									<input type="text" id="autocomplete" type="text" class="input-error input-xxlarge" />
-									<button class="sui-btn btn-xlarge btn-danger" type="button">搜索</button>
+									<input type="text" id="autocomplete" type="text"
+										   class="input-error input-xxlarge"
+										   ng-model="searchParams.keyword"/>
+									<button class="sui-btn btn-xlarge btn-danger"
+											ng-click="search()"
+											type="button">搜索</button>
 								</div>
+								{{searchParams.keyword}}
 							</form>
 						</div>
 						<div class="hotwords">
@@ -532,7 +537,7 @@
 					  </ol>
 					  <div class="carousel-inner">
 					    <div class="{{$index == 0 ? 'active' : ''}} item" ng-repeat="content in contentList">
-					    <a href="{{content.url}}/"><img src="{{content.pic}}"/></a>
+					    <a href="{{content.url}}/"><img src="{{content.pic}}" height="454" width="730" /></a>
 					    </div>
 					  </div><a href="#myCarousel" data-slide="prev" class="carousel-control left">‹</a><a href="#myCarousel" data-slide="next" class="carousel-control right">›</a>
 					</div>
