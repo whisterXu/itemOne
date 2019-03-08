@@ -13,10 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 import pinyougou.conmmon.pojo.PageResult;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
+ *  商品信息服务提供者
  * @author whister
  */
 @Service(interfaceName = "com.pinyougou.service.GoodsService")
@@ -114,6 +116,7 @@ public class GoodsServiceImpl implements GoodsService {
         goodsMapper.updateStatus(ids,auditStatus,columnName);
     }
 
+
     /**
      *  带条件分页查询
      * @param goods
@@ -152,5 +155,38 @@ public class GoodsServiceImpl implements GoodsService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+
+    /**
+     * 获取商品信息
+     * @param goodsId
+     * @return
+     */
+    @Override
+    public Map<String, Object> getGoodsByGoodsId(long goodsId) {
+//        定义数据模型
+        Map<String, Object> dataModel  = new HashMap<>(16);
+//        加载商品SPU数据
+        Goods goods = goodsMapper.selectByPrimaryKey(goodsId);
+        dataModel.put("goods",goods);
+
+//        加载商品描述数据
+        GoodsDesc goodsDesc = goodsDescMapper.selectByPrimaryKey(goodsId);
+        dataModel.put("goodsDesc",goodsDesc);
+
+//        查询商品分类根据分类ID,通过goodsCategoryId 分类id查询,填充到模板面包屑
+        if (goods != null && goods.getCategory3Id() != null){
+            String itemCat1 = itemCatMapper.selectByPrimaryKey(goods.getCategory1Id()).getName();
+            String itemCat2 = itemCatMapper.selectByPrimaryKey(goods.getCategory2Id()).getName();
+            String itemCat3 = itemCatMapper.selectByPrimaryKey(goods.getCategory3Id()).getName();
+            dataModel.put("itemCat1Name", itemCat1);
+            dataModel.put("itemCat2Name", itemCat2);
+            dataModel.put("itemCat3Name", itemCat3);
+        }
+
+
+//        返回数据模型
+        return dataModel;
     }
 }

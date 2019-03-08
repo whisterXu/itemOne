@@ -3,6 +3,8 @@ package com.pinyougou.service;
 import com.pinyougou.pojo.Goods;
 import pinyougou.conmmon.pojo.PageResult;
 
+import java.util.Map;
+
 /**
  * 商品服务接口
  * @author whister
@@ -30,4 +32,11 @@ public interface GoodsService {
      * @param ids
      */
     void updateStatus(Long[] ids,String auditStatus,String columnName);
+
+    /**
+     *  根据goodId查询商品
+     * @param goodsId
+     * @return  Map<String,Object>
+     */
+    Map<String,Object> getGoodsByGoodsId(long goodsId);
 }
