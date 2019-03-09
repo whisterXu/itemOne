@@ -52,7 +52,5 @@ app.controller("itemController", function ($scope) {
 
 
     /** 加入购物车 */
-    $scope.addToCat = function () {
-        alert("已加入购物车");
-    }
+
 });
