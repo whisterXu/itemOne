@@ -13,9 +13,13 @@
     <script src="/plugins/angularjs/angular.min.js"></script>
     <script src="/js/base.js"></script>
     <script src="/js/controller/itemController.js"></script>
+    <#--<script type="text/javascript">-->
+        <#--var itemList = ${itemList}-->
+    <#--</script>-->
 </head>
-
-<body ng-app="pinyougou"  ng-controller="itemController">
+<body ng-app="pinyougou"
+      ng-controller="itemController"
+		ng-init="loadSku()">
 
 	<#include "head.ftl"/>
 	<div class="py-container">
@@ -31,7 +35,12 @@
 				</ul>
 			</div>
 
+            <script type="text/javascript">
+                /** 定义SKU商品数据 */
+                var itemList = ${itemList};
+            </script>
 
+			${itemList}
 			<#-- 定义变量imageList  将json数组字符串转换为json数组对象 -->
 			<#assign imageList = goodsDesc.itemImages?eval/>
 			<!--product-info-->
@@ -65,7 +74,7 @@
 				</div>
 				<div class="fr itemInfo-wrap">
 					<div class="sku-name">
-						<h4>${goods.goodsName}</h4>
+						<h4>{{sku.title}}</h4>
 					</div>
 					<div class="news"><span>${goods.caption}</span></div>
 					<div class="summary">
@@ -75,7 +84,7 @@
 							</div>
 							<div class="fl price">
 								<i>¥</i>
-								<em>${goods.price}</em>
+								<em>{{sku.price}}</em>
 								<span>降价通知</span>
 							</div>
 							<div class="fr remark">
@@ -120,15 +129,16 @@
 								</div>
 								</dt>
 								<#list imageList as color>
-								<dd><a href="javascript:;" class="selected">${color.color}<span title="点击取消选择">&nbsp;</span></a></dd>
+								<dd><a href="javascript:;" class="selected">
+                                    ${color.color}<span title="点击取消选择">&nbsp;</span></a></dd>
 								<#--<dd><a href="javascript:;">银色</a></dd>-->
 								</#list>
 							</dl>
 
 							<#--规格选项表-->
 							<#--[{"attributeValue":["50英寸","55英寸"],"attributeName":"电视屏幕尺寸"}]-->
-							<#assign  specificationItems = goodsDesc.specificationItems?eval />
-							<#list specificationItems as s>
+							<#assign  specItems = goodsDesc.specificationItems?eval />
+							<#list specItems as s>
 							<dl>
 								<dt>
 									<div class="fl title">
@@ -136,14 +146,14 @@
 								</div>
 								</dt>
 								<#list s.attributeValue as options>
-								<dd><a href="javascript:;"  class="isSelected('${s.attributeName}','${options}') ? selected :''"
+								<dd><a href="javascript:;"  class="{{isSelected('${s.attributeName}','${options}') ? 'selected' :''}}"
 									ng-click="selectSpec('${s.attributeName}','${options}')">${options}<span title="点击取消选择">&nbsp;</span></a></dd>
 								<#--<dd><a href="javascript:;">64G</a></dd>-->
 								<#--<dd><a href="javascript:;" class="locked">128G</a></dd>-->
 								</#list>
 							</dl>
 							</#list>
-                            {{specificationItems}}
+                            {{specItems}}
 
 
 							<#--<dl>-->
@@ -195,7 +205,10 @@
 							<div class="fl">
 								<ul class="btn-choose unstyled">
 									<li>
-										<a href="cart.html" target="_blank" class="sui-btn  btn-danger addshopcar">加入购物车</a>
+										<#-- 加入购物车绑定点击事件 ng-click="addToCat()" -->
+										<a href="cart.html" target="_blank"
+										   ng-click="addToCat()"
+										   class="sui-btn  btn-danger addshopcar">加入购物车</a>
 									</li>
 								</ul>
 							</div>

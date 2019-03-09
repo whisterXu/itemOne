@@ -11,11 +11,9 @@ import com.pinyougou.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import pinyougou.conmmon.pojo.PageResult;
+import tk.mybatis.mapper.entity.Example;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *  商品信息服务提供者
@@ -185,6 +183,19 @@ public class GoodsServiceImpl implements GoodsService {
             dataModel.put("itemCat3Name", itemCat3);
         }
 
+        /* ######  根据条件查询SKU商品数据  #######*/
+        //创建查询条件,
+        Example example = new Example(Item.class);
+        Example.Criteria criteria = example.createCriteria();
+//        设置SKU状态,gondsId,按isDefault排序
+        criteria.andEqualTo("status", "1");
+        criteria.andIn("goodsId", Arrays.asList(goodsId));
+        example.orderBy("isDefault").desc();
+        List<Item> itemList = itemMapper.selectByExample(example);
+
+//      itemList装换成json字符串数组形式
+        System.out.println("itemList:" + JSON.toJSONString(itemList));
+        dataModel.put("itemList",JSON.toJSONString(itemList));
 
 //        返回数据模型
         return dataModel;
