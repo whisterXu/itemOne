@@ -4,6 +4,7 @@ import com.alibaba.dubbo.config.annotation.Service;
 import com.pinyougou.service.ItemSearchService;
 import com.pinyougou.solr.SolrItem;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.solr.core.SolrTemplate;
@@ -17,7 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 商品搜索服务
+ * 商品搜索服务  (对solr索引库进行操作)
+ *
  * @author whister
  */
 @Service(interfaceName = "com.pinyougou.service.ItemSearchService")
@@ -41,13 +43,12 @@ public class ItemsearchServiceImpl implements ItemSearchService {
         Integer page = (Integer) searchParamMap.get("page");
 //        获得页大小参数
         Integer rows = (Integer) searchParamMap.get("rows");
-        if (page == null){
+        if (page == null) {
             page = 1;
         }
-        if (rows == null){
+        if (rows == null) {
             rows = 15;
         }
-
 
 //        获取排序字段和排序方式参数
         String sortField = (String) searchParamMap.get("sortField");
@@ -72,27 +73,27 @@ public class ItemsearchServiceImpl implements ItemSearchService {
 //            添加条件到查询对象
             highlightQuery.addCriteria(criteria);
 
-             /* ####### 按照分类过滤 ,获取分类参数  ######## */
+            /* ####### 按照分类过滤 ,获取分类参数  ######## */
             String category = (String) searchParamMap.get("category");
-            if (StringUtils.isNoneBlank(category)){
+            if (StringUtils.isNoneBlank(category)) {
 //                创建条件对象
                 Criteria categoryCategory = new Criteria("category").is(category);
 //                添加分类过滤条件
                 highlightQuery.addCriteria(categoryCategory);
             }
 
-          /* ######## 2. 按照品牌过滤 获取品牌参数####### */
+            /* ######## 2. 按照品牌过滤 获取品牌参数####### */
             String brand = (String) searchParamMap.get("brand");
 //            判断品牌是否为空
-            if (StringUtils.isNoneBlank(brand)){
+            if (StringUtils.isNoneBlank(brand)) {
 //                创建条件对象
-                Criteria categoryBrand= new Criteria("brand").is(brand);
+                Criteria categoryBrand = new Criteria("brand").is(brand);
 //                添加品牌过滤条件
                 highlightQuery.addCriteria(categoryBrand);
             }
 
-             /* ######## 3.按照规格过滤查询   ,获取规格参数map集合 ######*/
-            Map<String,String> spec = (Map<String, String>) searchParamMap.get("spec");
+            /* ######## 3.按照规格过滤查询   ,获取规格参数map集合 ######*/
+            Map<String, String> spec = (Map<String, String>) searchParamMap.get("spec");
 //            判断是否为空
             if (spec != null) {
 //                迭代获取key
@@ -109,39 +110,38 @@ public class ItemsearchServiceImpl implements ItemSearchService {
 //            创建查询条件对象
             Criteria criteriaPrice = new Criteria("price");
 //            判断是否为空
-            if (StringUtils.isNoneBlank(price)){
+            if (StringUtils.isNoneBlank(price)) {
 //                以-分割price":"500-1000"  得到字符串数组
                 String[] split = price.split("-");
 //                定义比较变量
                 String minPrice = "0";
                 String maxPrice = "*";
 //                判断分割后第一个字符是否是0   (0-500)
-                if (minPrice.equals(split[0])){
+                if (minPrice.equals(split[0])) {
                     criteriaPrice.lessThanEqual(split[1]);
 //                    判断分割最后一个字符是否是(3000 - *)
-                }else if (maxPrice.equals(split[1])){
+                } else if (maxPrice.equals(split[1])) {
 //                   条件
                     criteriaPrice.greaterThanEqual(split[0]);
 //                    其他的(500-1000)
-                }else {
-                    criteriaPrice.between(split[0],split[1]);
+                } else {
+                    criteriaPrice.between(split[0], split[1]);
                 }
 //               将criteriaPrice过滤条件添加到查询对象
                 highlightQuery.addCriteria(criteriaPrice);
             }
 
 //            设置起始查询数和设置页大小
-            highlightQuery.setOffset((page-1) * rows);
+            highlightQuery.setOffset((page - 1) * rows);
             highlightQuery.setRows(rows);
 
             /* ###### 排序方式查询 ######  */
-            if (StringUtils.isNoneBlank(sortField) && StringUtils.isNoneBlank(sortWay)){
+            if (StringUtils.isNoneBlank(sortField) && StringUtils.isNoneBlank(sortWay)) {
 //                判断排序参数是否为空后, 创建排序对象,添加参数和排序方式.
-                Sort sort = new Sort("ASC".equalsIgnoreCase(sortWay) ? Sort.Direction.ASC:Sort.Direction.DESC,sortField);
+                Sort sort = new Sort("ASC".equalsIgnoreCase(sortWay) ? Sort.Direction.ASC : Sort.Direction.DESC, sortField);
 //                将排序对象添加到查询对象中
                 highlightQuery.addSort(sort);
             }
-
 
 //            获取分页查询对象
             HighlightPage<SolrItem> hp = solrTemplate.queryForHighlightPage(highlightQuery, SolrItem.class);
@@ -161,22 +161,20 @@ public class ItemsearchServiceImpl implements ItemSearchService {
 
 //            添加到map集合
             data.put("rows", hp.getContent());
-            data.put("totalPages",totalPages);
-            data.put("total",totalElements);
+            data.put("totalPages", totalPages);
+            data.put("total", totalElements);
 
-        }
-
-        else {  //简单查询
+        } else {  //简单查询
 
 //          创建查询对象
             Query query = new SimpleQuery("*:*");
 
 //          设置起始查询数和页大小
-            query.setOffset((page-1) * rows);
+            query.setOffset((page - 1) * rows);
             query.setRows(rows);
 
 //           查询索引库(分页检索)
-            ScoredPage<SolrItem> scoredPage = solrTemplate.queryForPage(query,SolrItem.class);
+            ScoredPage<SolrItem> scoredPage = solrTemplate.queryForPage(query, SolrItem.class);
 
             /* ########获取分页查询数据######## */
             List<SolrItem> content = scoredPage.getContent();
@@ -186,9 +184,44 @@ public class ItemsearchServiceImpl implements ItemSearchService {
 
 //            添加到map集合
             data.put("rows", content);
-            data.put("totalPages",totalPages);
-            data.put("total",totalElements);
+            data.put("totalPages", totalPages);
+            data.put("total", totalElements);
         }
         return data;
+    }
+
+    /**
+     * 添加或修改商品索引库索引
+     *
+     * @param solrItemList
+     */
+    @Override
+    public void saveOrUpdate(List<SolrItem> solrItemList) {
+        //调用solrTemplate的saveBean方法,保存solrItemList到solr索引库 如果id一样则做修改
+        UpdateResponse updateResponse = solrTemplate.saveBeans(solrItemList);
+        //判断响应状态码
+        if (updateResponse.getStatus() == 0) {
+            //提交事务
+            solrTemplate.commit();
+        } else {
+            //回滚事务
+            solrTemplate.rollback();
+        }
+    }
+
+    /**
+     * 删除sku商品索引库索引,根据商品ID (goodsId)
+     * @param ids
+     */
+    @Override
+    public void deleteSolrDoc(Long[] ids) {
+        Query query = new SimpleQuery();
+        query.addCriteria(new Criteria("goodsId").in(ids));
+        UpdateResponse response = solrTemplate.delete(query);
+        if (response.getStatus() == 0){
+            solrTemplate.commit();
+        }else {
+            solrTemplate.rollback();
+        }
     }
 }

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- 加载属性文件 -->
+    <context:property-placeholder location="classpath:jms.properties"/>
+
+    <!-- ################## 公共的配置 #################-->
+    <!-- 配置ActiveMQ的连接工厂 -->
+    <bean id="activeMQConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <!-- 设置消息中间件的连接地址 -->
+        <property name="brokerURL" value="${brokerURL}"/>
+    </bean>
+    <!-- 配置JMS的连接工厂封装ActiveMQ的连接厂 -->
+    <bean id="singleConnectionFactory" class="org.springframework.jms.connection.SingleConnectionFactory">
+        <!-- 设置目标连接工厂 -->
+        <property name="targetConnectionFactory" ref="activeMQConnectionFactory"/>
+    </bean>
+
+    <!-- ################## 配置消息的生产者 ################# -->
+    <!-- 配置JmsTemplate发送消息 -->
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <!-- 设置连接工厂 -->
+        <property name="connectionFactory" ref="singleConnectionFactory"/>
+    </bean>
+
+    <!-- 配置队列的目的地(同步SKU索引数据) -->
+    <bean id="solrQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <!-- 设置队列名称 -->
+        <constructor-arg  value="solr.queue"/>
+    </bean>
+
+    <!-- 配置队列的目的地(删除SKU索引数据) -->
+    <bean id="solrDeleteQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <!-- 设置队列名称 -->
+        <constructor-arg  value="solr.delete.queue"/>
+    </bean>
+    <!---->
+    <!--&lt;!&ndash; 配置队列的目的地(生成SPU商品的静态页面) &ndash;&gt;-->
+    <!--<bean id="pageTopic" class="org.apache.activemq.command.ActiveMQTopic">-->
+        <!--&lt;!&ndash; 设置主题名称 &ndash;&gt;-->
+        <!--<constructor-arg name="name" value="page.topic"/>-->
+    <!--</bean>-->
+    <!--&lt;!&ndash; 配置队列的目的地(删除SPU商品的静态页面) &ndash;&gt;-->
+    <!--<bean id="pageDeleteTopic" class="org.apache.activemq.command.ActiveMQTopic">-->
+        <!--&lt;!&ndash; 设置主题名称 &ndash;&gt;-->
+        <!--<constructor-arg name="name" value="page.delete.topic"/>-->
+    <!--</bean>-->
+
+</beans>

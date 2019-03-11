@@ -200,4 +200,23 @@ public class GoodsServiceImpl implements GoodsService {
 //        返回数据模型
         return dataModel;
     }
+
+    /**
+     * 查询SKU商品信息根据goodsId
+     * @param ids
+     * @return
+     */
+    @Override
+    public List<Item> findItemByGoodsId(Long[] ids) {
+        //创建示例对象
+        Example example = new Example(Item.class);
+        //创建查询条件对象
+        Example.Criteria criteria = example.createCriteria();
+        //添加and in条件
+        criteria.andIn("goodsId", Arrays.asList(ids));
+        //查询
+        List<Item> itemList = itemMapper.selectByExample(example);
+        //返回查询结果
+        return itemList;
+    }
 }

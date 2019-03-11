@@ -53,7 +53,7 @@
 							<span class="jqzoom">
 								<#if imageList?size gt 0>
 									<#--取数组中的第一个元素-->
-								<img jqimg="${imageList[0].url}" src="${imageList[0].url}" width="400px" height="400px" />
+								<img jqimg="${imageList[0].url}" src="${imageList[0].url}" style="width: 400px;height: 400px"/>
 								</#if>
 							</span>
 						</div>

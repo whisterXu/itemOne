@@ -1,12 +1,14 @@
 package com.pinyougou.service;
 
 import com.pinyougou.pojo.Goods;
+import com.pinyougou.pojo.Item;
 import pinyougou.conmmon.pojo.PageResult;
 
+import java.util.List;
 import java.util.Map;
 
 /**
- * 商品服务接口
+ * 商品服务接口 (对商品进行操作)
  * @author whister
  */
 public interface GoodsService {
@@ -30,6 +32,8 @@ public interface GoodsService {
      *  修改商品状态   审核商品
      * @param auditStatus
      * @param ids
+     * @param columnName
+     *
      */
     void updateStatus(Long[] ids,String auditStatus,String columnName);
 
@@ -39,4 +43,12 @@ public interface GoodsService {
      * @return  Map<String,Object>
      */
     Map<String,Object> getGoodsByGoodsId(long goodsId);
+
+    /**
+     * 查询SKU商品信息根据goodsId
+     * @param ids
+     * @return
+     */
+    List<Item> findItemByGoodsId(Long[] ids);
+
 }
