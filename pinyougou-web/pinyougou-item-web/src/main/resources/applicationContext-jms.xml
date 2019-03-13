@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jms="http://www.springframework.org/schema/jms"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms.xsd">
+
+    <!-- 加载属性配置文件 -->
+    <context:property-placeholder location="classpath:application.properties"/>
+
+    <!-- 配置activeMQ通用配置 -->
+    <bean id="activeMQConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <!-- 设置brokerURL(连接消息中间件的地址) -->
+        <property name="brokerURL" value="${brokerURL}"/>
+    </bean>
+    <!-- 配置Spring-JMS的单例连接工厂 -->
+    <bean id="connectionFactory" class="org.springframework.jms.connection.SingleConnectionFactory">
+        <!-- 设置ActiveMQ的连接工厂交由它管理(设置目标连接工厂)-->
+        <property name="targetConnectionFactory" ref="activeMQConnectionFactory"/>
+    </bean>
+
+    <!--########### 消息消费者配置 #############-->
+    <!--
+       配置监听器容器 connection-factory: 连接工厂 destination-type: 目标类型 -->
+    <jms:listener-container connection-factory="connectionFactory" destination-type="topic" receive-timeout="5000">
+        <!-- 配置监听器 destination: 主题名称 ref: 引用消息监听器Bean -->
+        <jms:listener destination="page.topic" ref="pageMessageListener"/>
+
+        <!-- 配置监听器 destination: 主题名称 ref: 引用消息监听器Bean -->
+        <jms:listener destination="page.delete.topic" ref="DeleteMessageListener"/>
+    </jms:listener-container>
+    <!-- 配置消息监听器Bean -->
+    <bean id="pageMessageListener" class="com.pinyougou.item.listener.PageMessageListener"/>
+    <!-- 配置消息监听器Bean -->
+    <bean id="DeleteMessageListener" class="com.pinyougou.item.listener.DeleteMessageListener"/>
+
+</beans>

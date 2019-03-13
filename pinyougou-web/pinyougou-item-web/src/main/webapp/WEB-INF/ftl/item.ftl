@@ -13,9 +13,7 @@
     <script src="/plugins/angularjs/angular.min.js"></script>
     <script src="/js/base.js"></script>
     <script src="/js/controller/itemController.js"></script>
-    <#--<script type="text/javascript">-->
-        <#--var itemList = ${itemList}-->
-    <#--</script>-->
+
 </head>
 <body ng-app="pinyougou"
       ng-controller="itemController"

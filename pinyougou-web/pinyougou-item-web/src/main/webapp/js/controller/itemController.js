@@ -50,7 +50,6 @@ app.controller("itemController", function ($scope) {
         }
     };
 
-
     /** 加入购物车 */
 
 });

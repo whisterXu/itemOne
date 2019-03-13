@@ -31,8 +31,8 @@
 
     <!-- 配置队列的目的地(同步SKU索引数据) -->
     <bean id="solrQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <!-- 设置队列名称 -->
-        <constructor-arg  value="solr.queue"/>
+    <!-- 设置队列名称 -->
+    <constructor-arg  value="solr.queue"/>
     </bean>
 
     <!-- 配置队列的目的地(删除SKU索引数据) -->
@@ -40,16 +40,17 @@
         <!-- 设置队列名称 -->
         <constructor-arg  value="solr.delete.queue"/>
     </bean>
-    <!---->
-    <!--&lt;!&ndash; 配置队列的目的地(生成SPU商品的静态页面) &ndash;&gt;-->
-    <!--<bean id="pageTopic" class="org.apache.activemq.command.ActiveMQTopic">-->
-        <!--&lt;!&ndash; 设置主题名称 &ndash;&gt;-->
-        <!--<constructor-arg name="name" value="page.topic"/>-->
-    <!--</bean>-->
-    <!--&lt;!&ndash; 配置队列的目的地(删除SPU商品的静态页面) &ndash;&gt;-->
-    <!--<bean id="pageDeleteTopic" class="org.apache.activemq.command.ActiveMQTopic">-->
-        <!--&lt;!&ndash; 设置主题名称 &ndash;&gt;-->
-        <!--<constructor-arg name="name" value="page.delete.topic"/>-->
-    <!--</bean>-->
+
+    <!-- 配置队列的目的地(生成SPU商品的静态页面) -->
+    <bean id="pageTopic" class="org.apache.activemq.command.ActiveMQTopic">
+        <!-- 设置主题名称 -->
+        <constructor-arg name="name" value="page.topic"/>
+    </bean>
+
+    <!-- 配置队列的目的地(删除SPU商品的静态页面) -->
+    <bean id="pageDeleteTopic" class="org.apache.activemq.command.ActiveMQTopic">
+        <!-- 设置主题名称 -->
+        <constructor-arg name="name" value="page.delete.topic"/>
+    </bean>
 
 </beans>

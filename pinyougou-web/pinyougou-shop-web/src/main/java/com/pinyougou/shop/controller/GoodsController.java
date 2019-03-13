@@ -30,6 +30,11 @@ public class GoodsController {
     private Destination solrQueue;
     @Autowired
     private Destination solrDeleteQueue;
+    @Autowired
+    private Destination pageTopic;
+    @Autowired
+    private Destination pageDeleteTopic;
+
 
     /**
      * 商品管理分页查询
@@ -61,8 +66,8 @@ public class GoodsController {
     /**
      * 保存goods   SPU商品数据
      *
-     * @param goods
-     * @return
+     * @param goods 商品对象SPU
+     * @return  返回true或false
      */
     @PostMapping("/save")
     public boolean save(@RequestBody Goods goods) {
@@ -83,9 +88,9 @@ public class GoodsController {
     /**
      * 实现上下架功能(修改上下架状态码 IsMarketable )
      *
-     * @param ids
-     * @param isMarketable
-     * @return
+     * @param ids  商品ID
+     * @param isMarketable  删除状态
+     * @return 返回true或false
      */
     @GetMapping("/updateIsMarketable")
     public boolean updateIsMarketable(Long[] ids, String isMarketable) {
@@ -102,12 +107,34 @@ public class GoodsController {
                         return objectMessage;
                     }
                 });
+                    //发消息生成动态网页
+                for (Long goodsId : ids) {
+                    jmsTemplate.send(pageTopic, new MessageCreator() {
+                        @Override
+                        public Message createMessage(Session session) throws JMSException {
+                            //商家商家向ActiveMQ发消息
+                            return session.createTextMessage(goodsId.toString());
+                        }
+                    });
+                }
             } else {
                 //下架 ,发送消息,删除索引库中对应索引
                 jmsTemplate.send(solrDeleteQueue, new MessageCreator() {
                     @Override
                     public Message createMessage(Session session) throws JMSException {
                         ObjectMessage objectMessage = session.createObjectMessage(ids);
+                        return objectMessage;
+                    }
+                });
+
+                //发送消息,删除静态网页
+                jmsTemplate.send(pageDeleteTopic, new MessageCreator() {
+                    @Override
+                    public Message createMessage(Session session) throws JMSException {
+                        //创建消息发送对象
+                        ObjectMessage objectMessage = session.createObjectMessage();
+                        //发送消息
+                        objectMessage.setObject(ids);
                         return objectMessage;
                     }
                 });
@@ -118,6 +145,7 @@ public class GoodsController {
         }
         return false;
     }
+
 
     /**
      * 删除商品,修改商品状态

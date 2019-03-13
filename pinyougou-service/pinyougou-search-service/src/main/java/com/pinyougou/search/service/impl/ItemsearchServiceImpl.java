@@ -49,7 +49,6 @@ public class ItemsearchServiceImpl implements ItemSearchService {
         if (rows == null) {
             rows = 15;
         }
-
 //        获取排序字段和排序方式参数
         String sortField = (String) searchParamMap.get("sortField");
         String sortWay = (String) searchParamMap.get("sort");
