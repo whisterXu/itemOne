@@ -1,34 +1,32 @@
 package com.pinyougou.service;
 
 import com.pinyougou.pojo.User;
-import java.util.List;
-import java.io.Serializable;
 /**
- * UserService 服务接口
+ * UserService 用户服务接口
+ * @author whistler
  * @date 2019-02-28 20:43:34
  * @version 1.0
  */
 public interface UserService {
 
-	/** 添加方法 */
+	/**
+	 *  添加方法
+	 * @param user  用户对象封装
+	 */
 	void save(User user);
+	/**
+	 * 发送短信
+	 * @param phone 手机号码
+	 * @return true或false
+	 */
+    boolean sendCode(String phone);
 
-	/** 修改方法 */
-	void update(User user);
-
-	/** 根据主键id删除 */
-	void delete(Serializable id);
-
-	/** 批量删除 */
-	void deleteAll(Serializable[] ids);
-
-	/** 根据主键id查询 */
-	User findOne(Serializable id);
-
-	/** 查询全部 */
-	List<User> findAll();
-
-	/** 多条件分页查询 */
-	List<User> findByPage(User user, int page, int rows);
-
+	/**
+	 *  验证短信验证码是否相等的方法
+	 *
+	 * @param phone  手机号码
+	 * @param smsCode  验证码
+	 * @return  返回true或者false
+	 */
+	boolean checkCode(String phone,String smsCode);
 }

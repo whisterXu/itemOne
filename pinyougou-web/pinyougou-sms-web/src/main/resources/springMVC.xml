@@ -28,24 +28,6 @@
     <mvc:default-servlet-handler/>
 
 
-    <!--######### spring 整合 FreeMark #########-->
-    <!-- 配置FreeMarkerConfigurer-->
-    <bean id="freeMarkerConfigurer" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
-        <!--  设置模板文件加载的基础路径 -->
-        <property name="templateLoaderPath" value="/WEB-INF/ftl/"/>
-        <!-- 设置默认编码 -->
-        <property name="defaultEncoding" value="UTF-8"/>
-    </bean>
-    <!-- #######配置FreeMarker视图解析器######## -->
-    <bean  class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
-        <!-- 配置内容类型 -->
-        <property name="contentType" value="text/html;charset=UTF-8"/>
-        <!-- 配置模板文件后缀名 -->
-        <property name="suffix" value=".ftl"/>
-    </bean>
-
-
-
     <!-- ############## 配置 dubbo 服务消费者 ############## -->
     <!-- 配置当前应用的名称 -->
     <dubbo:application name="pinyougou-sms-web"/>

@@ -39,10 +39,10 @@ public class GoodsController {
     /**
      * 商品管理分页查询
      *
-     * @param goods
-     * @param page
-     * @param rows
-     * @return
+     * @param goods 商品对象封装参数
+     * @param page  当前页
+     * @param rows  页大小
+     * @return 返回分页结果
      */
     @GetMapping("/findByPage")
     public PageResult findByPage(Goods goods, Integer page, Integer rows) {
