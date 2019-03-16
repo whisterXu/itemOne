@@ -13,6 +13,7 @@ app.controller('userController', function ($scope,$timeout, baseService) {
                     alert("亲,注册成功!");
                     $scope.user = {};
                     $scope.password = "";
+                    $scope.smsCode = '';
                     location.href = "http://www.pinyougou.com";
                 } else {
                     alert("亲,注册失败!");

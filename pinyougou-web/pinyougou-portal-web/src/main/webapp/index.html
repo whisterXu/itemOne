@@ -13,7 +13,7 @@
 	<script src="/plugins/angularjs/angular.min.js"></script>
 	<script src="/js/base.js"></script>
 	<script src="/js/service/baseService.js"></script>
-	<script src="/js/controller/indexController.js"></script>
+	<script src="/js/controller/baseController.js"></script>
 
 </head>
 
@@ -537,7 +537,7 @@
 					  </ol>
 					  <div class="carousel-inner">
 					    <div class="{{$index == 0 ? 'active' : ''}} item" ng-repeat="content in contentList">
-					    <a href="{{content.url}}/"><img src="{{content.pic}}" height="454" width="730" /></a>
+					    <a href="{{content.url}}/"><img src="{{content.pic}}" style="height: 455px;width: 730px" /></a>
 					    </div>
 					  </div><a href="#myCarousel" data-slide="prev" class="carousel-control left">‹</a><a href="#myCarousel" data-slide="next" class="carousel-control right">›</a>
 					</div>

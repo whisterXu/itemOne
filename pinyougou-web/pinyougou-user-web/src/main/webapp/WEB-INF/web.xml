@@ -20,6 +20,29 @@
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 
+
+
+	<!-- ###########配置Spring的核心监听器 ########## -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	<!-- 配置Spring加载文件 -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:applicationContext*.xml</param-value>
+	</context-param>
+
+	<!-- ###########配置委派过滤器########## -->
+	<!-- 这里的filter-name 只能是:springSecurityFilterChain  不能修改-->
+	<filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
 	<!-- ###########配置全局编码过滤器########## -->
 	<filter>
 		<filter-name>characterEncodingFilter</filter-name>
@@ -34,7 +57,8 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
+	<!-- 欢迎列表 -->
 	<welcome-file-list>
-		<welcome-file>register.html</welcome-file>
+		<welcome-file>home-index.html</welcome-file>
 	</welcome-file-list>
 </web-app>
