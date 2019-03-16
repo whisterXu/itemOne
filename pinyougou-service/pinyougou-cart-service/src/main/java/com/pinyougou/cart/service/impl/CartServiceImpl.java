@@ -187,4 +187,45 @@ public class CartServiceImpl implements CartService {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     *  将购物车添加到redis数据库
+     * @param cartList  购物车列表
+     * @param username  登录用户名
+     * @return  返回一个购物车列表
+     */
+    @Override
+    public void addCartToRedis(List<Cart> cartList, String username) {
+        try {
+            redisTemplate.boundValueOps("cart_" + username).set(cartList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 合并购物车  将将cookie中的购物车列表和redis中的的购物车列表合并
+     * @param cookieCarts  cookie中的购物车列表
+     * @param redisCarts  redis的购物车列表
+     * @return  返回合并后的购物车
+     */
+    @Override
+    public List<Cart> mergeCart(List<Cart> cookieCarts, List<Cart> redisCarts) {
+        try{
+            //遍历cookie中的购物车列表,获得购物车
+            for (Cart cookieCart : cookieCarts) {
+                //遍历cookie中商家的购物车,获得订单明细
+                for (OrderItem orderItem : cookieCart.getOrderItems()) {
+                    //循环获取cookie购物车列表信息,创建购物车和购物车订单明细 添加到redis购物车列表
+                    //调用addItemToCart方法添加SKU商品到购物车,将购物车循环添加到redis数据库
+                    redisCarts = addItemToCart(redisCarts, orderItem.getItemId(), orderItem.getNum());
+                }
+            }
+            //返回合并后的购物车
+            return redisCarts;
+        }catch(Exception ex){
+            throw new RuntimeException(ex);
+        }
+    }
+
 }

@@ -46,16 +46,22 @@ public class cartController {
     public boolean addCart(Long itemId, Integer num,HttpServletRequest request){
 
         try {
+
             //获取用户登录名
             String username = request.getRemoteUser();
-
             //查询cookie中是否存在购物车
             List<Cart> cartList = findCart();
+            //判断用户名是否为空
             //将SKU添加到购物车
             cartList = cartService.addItemToCart(cartList,itemId,num);
-            //把购物车保存到Cookie
-            CookieUtils.setCookie(request,response, CookieUtils.CookieName.PINYOUGOU_CART,
-                    JSON.toJSONString(cartList),3600*24,true);
+            if (StringUtils.isNoneBlank(username)){
+                //#######将购物车添加到redis数据库中#########
+                cartService.addCartToRedis(cartList,username);
+            }else {
+                //把购物车保存到Cookie
+                CookieUtils.setCookie(request,response, CookieUtils.CookieName.PINYOUGOU_CART,
+                        JSON.toJSONString(cartList),3600*24,true);
+            }
             //返回购物车集合
             return true;
         } catch (Exception e) {
@@ -66,16 +72,36 @@ public class cartController {
 
     @GetMapping("/findCart")
     public List<Cart> findCart(){
+        //定义购物车集合列表
         List<Cart> carts = null;
         //获取用户登录名
         String username = request.getRemoteUser();
+
         //判断用户名是否存在
-        //存在
+        //########存在,已登录#######
         if (StringUtils.isNoneBlank(username)){
             //从redis数据库中读取数据
             carts = cartService.findCartFromRedis(username);
+
+            //#########获取cookie中的购物车(Json字符串)
+            String cartStr = CookieUtils.getCookieValue(request, CookieUtils.CookieName.PINYOUGOU_CART, true);
+            //判断cartStr购物车是否为空
+            if (StringUtils.isNoneBlank(cartStr)){
+                //将cartStr购物车字符串转成购物车列表集合List<cart>
+                List<Cart> cookieCarts  = JSON.parseArray(cartStr,Cart.class);
+                if (cookieCarts != null && cookieCarts.size() > 0) {
+                    //###########合并购物车,返回合并后的购物车########
+                    carts = cartService.mergeCart(cookieCarts,carts);
+
+                    //#############将合并后的购物车添加到redis数据库中########
+                    cartService.addCartToRedis(carts,username);
+
+                    //##########删除cookie中的购物车列表#######
+                    CookieUtils.deleteCookie(request,response,CookieUtils.CookieName.PINYOUGOU_CART);
+                }
+            }
         }else {
-            //从cookie中获取购物车.
+            //######未登录,从cookie中获取购物车#########.
             String cartStr = CookieUtils.getCookieValue(request, CookieUtils.CookieName.PINYOUGOU_CART, true);
             //如果cookie中购物车为空
             if (StringUtils.isBlank(cartStr)){

@@ -29,4 +29,20 @@ public interface CartService {
      * @return  返回购物车
      */
     List<Cart> findCartFromRedis(String username);
+
+    /**
+     * 将购物车添加到redis数据库
+     * @param cartList  购物车列表
+     * @param username  登录用户名
+     * @return  放回一个购物车
+     */
+    void addCartToRedis(List<Cart> cartList, String username);
+
+    /**
+     *   合并购物车  将将cookie中的购物车列表和redis中的的购物车列表合并
+     * @param cookieCarts  cookie中的购物车列表
+     * @param carts  redis的购物车列表
+     * @return  返回合并后的购物车
+     */
+    List<Cart> mergeCart(List<Cart> cookieCarts, List<Cart> carts);
 }
