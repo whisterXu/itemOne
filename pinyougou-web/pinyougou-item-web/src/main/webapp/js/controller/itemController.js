@@ -1,5 +1,7 @@
 /** 定义搜索控制器 */
-app.controller("itemController", function ($scope) {
+app.controller("itemController", function ($scope,$controller) {
+    //继承baseController
+    $controller("baseController",{$scope:$scope});
 
     /** 定义购买数量操作方法 */
     $scope.num =1;

@@ -1,5 +1,6 @@
 /** 定义搜索控制器 */
-app.controller("searchController", function ($scope, $sce,$location, baseService) {
+app.controller("searchController", function ($scope,$controller,$sce,$location, baseService) {
+    $controller("baseController",{$scope:$scope});
     /**
      * 搜索方法
      * @type searchParams = {}

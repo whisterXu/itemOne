@@ -41,6 +41,20 @@
 
 
 	<!--############## CAS单点登录配置  开始 ################-->
+	<!-- 配置单点退出过滤器 -->
+	<filter>
+		<filter-name>singleSignOutFilter</filter-name>
+		<filter-class>org.jasig.cas.client.session.SingleSignOutFilter</filter-class>
+		<init-param>
+			<!-- cas服务url前缀 -->
+			<param-name>casServerUrlPrefix</param-name>
+			<param-value>http://sso.pinyougou.com</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>singleSignOutFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
 
 	<!-- 配置身份认证过滤器 (不需要跳转到CAS登录系统) -->
 	<filter>
@@ -54,7 +68,7 @@
 		<init-param>
 			<!-- 配置服务名称 -->
 			<param-name>serverName</param-name>
-			<param-value>http://www.pinyougou.com</param-value>
+			<param-value>http://item.pinyougou.com</param-value>
 		</init-param>
 		<!-- 配置gateway=true”时，启用异步方式认证 -->
 		<init-param>
@@ -79,7 +93,7 @@
 		<!-- 配置服务名称 -->
 		<init-param>
 			<param-name>serverName</param-name>
-			<param-value>http://www.pinyougou.com</param-value>
+			<param-value>http://item.pinyougou.com</param-value>
 		</init-param>
 	</filter>
 	<filter-mapping>

@@ -24,7 +24,7 @@ public interface GoodsService {
 
     /**
      * 添加商品基本信息
-     * @param goods
+     * @param goods 商品对象作为参数
      */
     void save(Goods goods);
 

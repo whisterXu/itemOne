@@ -158,22 +158,23 @@ public class GoodsServiceImpl implements GoodsService {
 
     /**
      * 获取商品信息
-     * @param goodsId
-     * @return
+     * @param goodsId  商品id
+     * @return  freeMark数据模型 map集合
      */
     @Override
     public Map<String, Object> getGoodsByGoodsId(long goodsId) {
-//        定义数据模型
+        //定义freeMark数据模型 map集合
         Map<String, Object> dataModel  = new HashMap<>(16);
-//        加载商品SPU数据
+
+        //加载商品SPU数据
         Goods goods = goodsMapper.selectByPrimaryKey(goodsId);
         dataModel.put("goods",goods);
 
-//        加载商品描述数据
+        //加载商品描述数据
         GoodsDesc goodsDesc = goodsDescMapper.selectByPrimaryKey(goodsId);
         dataModel.put("goodsDesc",goodsDesc);
 
-//        查询商品分类根据分类ID,通过goodsCategoryId 分类id查询,填充到模板面包屑
+        //查询商品分类根据分类ID,通过goodsCategoryId 分类id查询,填充到模板面包屑
         if (goods != null && goods.getCategory3Id() != null){
             String itemCat1 = itemCatMapper.selectByPrimaryKey(goods.getCategory1Id()).getName();
             String itemCat2 = itemCatMapper.selectByPrimaryKey(goods.getCategory2Id()).getName();
