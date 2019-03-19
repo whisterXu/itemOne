@@ -18,7 +18,13 @@ public class GoodsController {
     @Reference(timeout = 10000)
     private GoodsService goodsService;
 
-
+    /**
+     * 分页查询商品
+     * @param goods  商品对象封装参数
+     * @param page  当前页
+     * @param rows   页大小
+     * @return       返回PageResult封装分页数据
+     */
     @GetMapping("/findByPage")
     public PageResult findByPage(Goods goods, Integer page,Integer rows){
         try{
@@ -40,8 +46,8 @@ public class GoodsController {
 
     /**
      *  修改商品状态   审核商品
-     * @param auditStatus
-     * @return
+     * @param auditStatus  审核商品状态
+     * @return 返回boolean类型
      */
     @GetMapping("/updateStatus")
     public boolean updateStatus(Long[] ids ,String auditStatus){

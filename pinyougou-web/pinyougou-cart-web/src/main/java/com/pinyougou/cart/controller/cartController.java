@@ -43,10 +43,13 @@ public class cartController {
      * @return  返回true或false
      */
     @GetMapping("/addCart")
-    public boolean addCart(Long itemId, Integer num,HttpServletRequest request){
-
+//    @CrossOrigin(origins="http://item.pinyougou.com", allowCredentials="true")
+    public boolean addCart(Long itemId, Integer num,HttpServletRequest request,HttpServletResponse response){
         try {
-
+            //设置允许访问的域名
+            response.setHeader("Access-Control-Allow-Origin","http://item.pinyougou.com");
+            //设置允许的cookie
+            response.setHeader("Access-Control-Allow-Credentials","true");
             //获取用户登录名
             String username = request.getRemoteUser();
             //查询cookie中是否存在购物车

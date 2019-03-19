@@ -210,6 +210,7 @@ app.controller('goodsController', function ($scope, $controller, baseService) {
 
 
     $scope.updateIsMarketable = function (status) {
+
         if ($scope.ids.length == 0) {
             alert("请选择您要操作的选项!");
         } else {

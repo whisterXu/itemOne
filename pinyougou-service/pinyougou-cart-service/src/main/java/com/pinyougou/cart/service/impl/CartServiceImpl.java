@@ -100,8 +100,8 @@ public class CartServiceImpl implements CartService {
                 if (orderItem.getNum() <= 0){
                     cart.getOrderItems().remove(orderItem);
                 }
-                //判断购物车中长度是否等于0 ,如果等于0 ,上车购物车
-                if (cartList.size() == 0){
+                //判断购物车cart的orderItems长度是否等于0 ,如果等于0 ,删除购物车
+                if (cart.getOrderItems().size() == 0){
                     cartList.remove(cart);
                 }
             }

@@ -5,12 +5,15 @@ import java.util.List;
 import java.io.Serializable;
 /**
  * OrderService 服务接口
+ * @author whister
  * @date 2019-02-28 20:43:34
  * @version 1.0
  */
 public interface OrderService {
 
-	/** 添加方法 */
+	/** 添加方法
+	 * @param order
+	 */
 	void save(Order order);
 
 	/** 修改方法 */

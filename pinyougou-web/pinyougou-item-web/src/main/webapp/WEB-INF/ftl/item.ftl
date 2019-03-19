@@ -204,9 +204,8 @@
 							<div class="fl">
 								<ul class="btn-choose unstyled">
 									<li>
-										<#-- 加入购物车绑定点击事件 ng-click="addToCat()" -->
-										<a href="cart.html" target="_blank"
-										   ng-click="addToCat()"
+										<#-- 加入购物车绑定点击事件 ng-click="addCart()" -->
+										<a href="javaScript:;" target="_blank" ng-click="addCart();"
 										   class="sui-btn  btn-danger addshopcar">加入购物车</a>
 									</li>
 								</ul>

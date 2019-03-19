@@ -51,4 +51,11 @@ public interface GoodsService {
      */
     List<Item> findItemByGoodsId(Long[] ids);
 
+    /**
+     *  根据goodid查询商品
+     * @param ids  商品ID集合
+     * @return   返回商品集合
+     */
+    List<Goods> findGoodsByGoodIds(Long[] ids);
+
 }

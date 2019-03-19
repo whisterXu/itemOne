@@ -26,7 +26,10 @@ public interface AddressService {
 	/** 根据主键id查询 */
 	Address findOne(Serializable id);
 
-	/** 查询全部 */
+	/**
+	 * 查询全部用户地址
+	 * @return 返回用户地址集合
+	 */
 	List<Address> findAll();
 
 	/** 多条件分页查询 */

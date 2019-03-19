@@ -4,6 +4,7 @@ app.controller("cartController",function ($scope, $controller,baseService) {
     $controller("baseController",{$scope:$scope});
 
 
+
     /**
      * 添加购物车的方法
      */
@@ -22,7 +23,6 @@ app.controller("cartController",function ($scope, $controller,baseService) {
         baseService.sendGet("/cart/findCart").then(function (response) {
             //获得相应数据
             $scope.cartList = response.data;
-
             //购物车商品总数和总金额计算
             $scope.total();
         })
@@ -41,8 +41,6 @@ app.controller("cartController",function ($scope, $controller,baseService) {
                 $scope.totalEntity.totalMoney += orderItem.totalFee;
             }
         }
-    }
-
-
+    };
 
 });

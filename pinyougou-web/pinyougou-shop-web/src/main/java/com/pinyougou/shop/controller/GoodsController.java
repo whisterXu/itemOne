@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import pinyougou.conmmon.pojo.PageResult;
 
 import javax.jms.*;
+import java.util.List;
 
 /**
  * 商品控制器
@@ -95,50 +96,61 @@ public class GoodsController {
     @GetMapping("/updateIsMarketable")
     public boolean updateIsMarketable(Long[] ids, String isMarketable) {
         try {
-            //调用goods服务层接口方法,实现了方法复用 (运营商管理后台和商家管理后台共同调用了同一个服务层方法)
-            goodsService.updateStatus(ids, isMarketable, "is_marketable");
-            //判断状态是否为1 : 上架
-            if ("1".equals(isMarketable)) {
-                //生产消息 (发送消息，生成商品索引)
-                jmsTemplate.send(solrQueue, new MessageCreator() {
-                    @Override
-                    public Message createMessage(Session session) throws JMSException {
-                        ObjectMessage objectMessage = session.createObjectMessage(ids);
-                        return objectMessage;
-                    }
-                });
-                    //发消息生成动态网页
-                for (Long goodsId : ids) {
-                    jmsTemplate.send(pageTopic, new MessageCreator() {
-                        @Override
-                        public Message createMessage(Session session) throws JMSException {
-                            //商家商家向ActiveMQ发消息
-                            return session.createTextMessage(goodsId.toString());
-                        }
-                    });
-                }
-            } else {
-                //下架 ,发送消息,删除索引库中对应索引
-                jmsTemplate.send(solrDeleteQueue, new MessageCreator() {
-                    @Override
-                    public Message createMessage(Session session) throws JMSException {
-                        ObjectMessage objectMessage = session.createObjectMessage(ids);
-                        return objectMessage;
-                    }
-                });
+            List<Goods> goodsList = goodsService.findGoodsByGoodIds(ids);
+            if (goodsList != null && goodsList.size() > 0){
+                for (Goods goods : goodsList) {
+                    String auditStatus = goods.getAuditStatus();
+                    if (StringUtils.isNoneBlank(auditStatus) && "1".equals(auditStatus)){
+                        //调用goods服务层接口方法,实现了方法复用 (运营商管理后台和商家管理后台共同调用了同一个服务层方法)
+                        goodsService.updateStatus(ids, isMarketable, "is_marketable");
+                        //判断状态是否为1 : 上架
+                        if ("1".equals(isMarketable)) {
+                            //生产消息 (发送消息，生成商品索引)
+                            jmsTemplate.send(solrQueue, new MessageCreator() {
+                                @Override
+                                public Message createMessage(Session session) throws JMSException {
+                                    ObjectMessage objectMessage = session.createObjectMessage(ids);
+                                    return objectMessage;
+                                }
+                            });
+                            //发消息生成动态网页
+                            for (Long goodsId : ids) {
+                                jmsTemplate.send(pageTopic, new MessageCreator() {
+                                    @Override
+                                    public Message createMessage(Session session) throws JMSException {
+                                        //商家商家向ActiveMQ发消息
+                                        return session.createTextMessage(goodsId.toString());
+                                    }
+                                });
+                            }
+                        } else {
+                            //下架 ,发送消息,删除索引库中对应索引
+                            jmsTemplate.send(solrDeleteQueue, new MessageCreator() {
+                                @Override
+                                public Message createMessage(Session session) throws JMSException {
+                                    ObjectMessage objectMessage = session.createObjectMessage(ids);
+                                    return objectMessage;
+                                }
+                            });
 
-                //发送消息,删除静态网页
-                jmsTemplate.send(pageDeleteTopic, new MessageCreator() {
-                    @Override
-                    public Message createMessage(Session session) throws JMSException {
-                        //创建消息发送对象
-                        ObjectMessage objectMessage = session.createObjectMessage();
-                        //发送消息
-                        objectMessage.setObject(ids);
-                        return objectMessage;
+                            //发送消息,删除静态网页
+                            jmsTemplate.send(pageDeleteTopic, new MessageCreator() {
+                                @Override
+                                public Message createMessage(Session session) throws JMSException {
+                                    //创建消息发送对象
+                                    ObjectMessage objectMessage = session.createObjectMessage();
+                                    //发送消息
+                                    objectMessage.setObject(ids);
+                                    return objectMessage;
+                                }
+                            });
+                        }
+                    }else {
+                        throw new RuntimeException("商品为审核通过,不能上架!");
                     }
-                });
+                }
             }
+
             return true;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -150,14 +162,14 @@ public class GoodsController {
     /**
      * 删除商品,修改商品状态
      *
-     * @param auditStatus
-     * @return
+     * @param Status 商品状态
+     * @return  返回boolean类型
      */
     @GetMapping("/delete")
-    public boolean delete(Long[] ids, String auditStatus) {
+    public boolean delete(Long[] ids, String Status) {
         try {
 //            调用服务接口的方法
-            goodsService.updateStatus(ids, auditStatus, "is_delete");
+            goodsService.updateStatus(ids, Status, "is_delete");
             return true;
         } catch (Exception e) {
             e.printStackTrace();

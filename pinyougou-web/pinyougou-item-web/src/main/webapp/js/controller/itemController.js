@@ -1,5 +1,5 @@
 /** 定义搜索控制器 */
-app.controller("itemController", function ($scope,$controller) {
+app.controller("itemController", function ($scope,$controller,$http) {
     //继承baseController
     $controller("baseController",{$scope:$scope});
 
@@ -53,5 +53,15 @@ app.controller("itemController", function ($scope,$controller) {
     };
 
     /** 加入购物车 */
-
+    $scope.addCart = function () {
+        $http.get("http://cart.pinyougou.com/cart/addCart?itemId=" + $scope.sku.id +
+            "&num=" + $scope.num,{"withCredentials":true}).then(function (response) {
+            if (response.data){
+                /** 跳转到购物车页面 */
+                location.href='http://cart.pinyougou.com/cart.html';
+            }else {
+                alert("操作失败!");
+            }
+        })
+    }
 });

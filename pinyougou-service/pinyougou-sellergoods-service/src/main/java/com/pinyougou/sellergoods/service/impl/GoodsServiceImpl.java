@@ -111,7 +111,11 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public void updateStatus(Long[] ids,String auditStatus,String columnName) {
-        goodsMapper.updateStatus(ids,auditStatus,columnName);
+        try {
+            goodsMapper.updateStatus(ids,auditStatus,columnName);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -219,5 +223,23 @@ public class GoodsServiceImpl implements GoodsService {
         List<Item> itemList = itemMapper.selectByExample(example);
         //返回查询结果
         return itemList;
+    }
+
+
+    /**
+     *  根据goodid查询商品
+     * @param ids  商品ID集合
+     * @return   返回商品集合
+     */
+    @Override
+    public List<Goods> findGoodsByGoodIds(Long[] ids){
+        try {
+            Example example = new Example(Goods.class);
+            Example.Criteria criteria = example.createCriteria();
+            criteria.andIn("id", Arrays.asList(ids));
+            return  goodsMapper.selectByExample(example);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
