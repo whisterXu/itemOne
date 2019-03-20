@@ -4,8 +4,10 @@ import com.alibaba.dubbo.config.annotation.Service;
 import com.pinyougou.cart.Cart;
 import com.pinyougou.mapper.OrderItemMapper;
 import com.pinyougou.mapper.OrderMapper;
+import com.pinyougou.mapper.PayLogMapper;
 import com.pinyougou.pojo.Order;
 import com.pinyougou.pojo.OrderItem;
+import com.pinyougou.pojo.PayLog;
 import com.pinyougou.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -14,6 +16,7 @@ import pinyougou.conmmon.utils.IdWorker;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -38,19 +41,28 @@ public class OrderServiceImpl implements OrderService {
     private IdWorker idWorker;
     @Autowired
     private OrderItemMapper orderItemMapper;
+    @Autowired
+    private PayLogMapper paylogMaper;
 
     /**
-     *  添加订单,创建订单
-     *  @param order 订单对熊作为封装参数
+     * 添加订单,创建订单
+     *
+     * @param order 订单对熊作为封装参数
      */
     @Override
     public void save(Order order) {
         //获取用户的购物车
-        List<Cart> cartList = (List<Cart>) redisTemplate.boundValueOps("cart_"+order.getUserId()).get();
-        if (cartList != null && cartList.size() > 0 ){
+        List<Cart> cartList = (List<Cart>) redisTemplate.boundValueOps("cart_" + order.getUserId()).get();
+        //定义订单ID集合(一次支付对应对个订单id)
+        List<String> orderList = new ArrayList<>();
+
+        //判断,遍历集合
+        if (cartList != null && cartList.size() > 0) {
             for (Cart cart : cartList) {
                 Order order1 = new Order();
+
                 long orderId = idWorker.nextId();
+
                 order1.setOrderId(orderId);
                 order1.setPaymentType(order.getPaymentType());
                 order1.setStatus("1");
@@ -63,8 +75,10 @@ public class OrderServiceImpl implements OrderService {
                 order1.setSourceType("2");
                 order1.setSellerId(cart.getSellerId());
 
+                //添加订单ID到订单ID集合
+                orderList.add(String.valueOf(orderId));
 
-                //定义订单总金额
+                //定义变量记录 订单总金额
                 double totalMoney = 0;
                 for (OrderItem orderItem : cart.getOrderItems()) {
                     //往订单表里面插入数据
@@ -74,7 +88,7 @@ public class OrderServiceImpl implements OrderService {
                     //设置关联的订单id
                     orderItem.setOrderId(orderId);
                     //计算总金额
-                    totalMoney +=orderItem.getTotalFee().doubleValue();
+                    totalMoney += orderItem.getTotalFee().doubleValue();
                     //###############往订单明细表中插入数据
                     orderItemMapper.insertSelective(orderItem);
                 }
@@ -82,8 +96,35 @@ public class OrderServiceImpl implements OrderService {
                 order1.setPayment(new BigDecimal(totalMoney));
                 //##########往订单表中插入数据
                 orderMapper.insertSelective(order1);
+
+
+                if ("1".equals(order.getPaymentType())) {
+                    //创建支付日志对象
+                    PayLog payLog = new PayLog();
+                    //交易订单号
+                    payLog.setOutTradeNo(String.valueOf(idWorker.nextId()));
+                    payLog.setCreateTime(new Date());
+                    payLog.setPayTime(new Date());
+                    //总金额
+                    payLog.setTotalFee((long) totalMoney);
+                    //用户id
+                    payLog.setUserId(order.getUserId());
+                    //支付状态
+                    payLog.setTradeState("0");
+                    //订单集合
+                    String ids = orderList.toString().replace("[", "").
+                            replace("]", "").replace(" ", "");
+                    payLog.setOrderList(ids);
+                    //支付类型
+                    payLog.setPayType("1");
+                    //往数据库中插入数据
+                    paylogMaper.insertSelective(payLog);
+
+                    //往reids中插入支付日志
+                    redisTemplate.boundValueOps("payLog_" + order.getUserId()).set(payLog);
+                }
             }
-        }else {
+        } else {
             throw new RuntimeException("redis数据库中数据为空! ");
         }
         //删除用户redis中的购物车
@@ -93,7 +134,7 @@ public class OrderServiceImpl implements OrderService {
     /**
      * 修改方法
      *
-     * @param order  订单对象封装参数
+     * @param order 订单对象封装参数
      */
     @Override
     public void update(Order order) {
@@ -147,6 +188,18 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> findByPage(Order order, int page, int rows) {
         return null;
+    }
+
+    /**
+     * 根据用户id查询支付日志
+     * @param username  用户id
+     * @return 返回支付日志对象封装参数
+     */
+    @Override
+    public PayLog findPayLogFromRedis(String username) {
+        //从redis中根据用户id查询支付日志 ,返回支付日志对象
+        PayLog PayLog = (PayLog)redisTemplate.boundValueOps("payLog_" + username).get();
+        return PayLog;
     }
 
 }

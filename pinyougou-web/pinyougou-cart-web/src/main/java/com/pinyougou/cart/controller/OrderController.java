@@ -3,16 +3,14 @@ package com.pinyougou.cart.controller;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.pinyougou.pojo.Address;
 import com.pinyougou.pojo.Order;
+import com.pinyougou.pojo.PayLog;
 import com.pinyougou.service.AddressService;
 import com.pinyougou.service.OrderService;
 import com.pinyougou.service.WeiXinPayService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import pinyougou.conmmon.utils.IdWorker;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -61,7 +59,7 @@ public class OrderController {
      * @return 返回boolean类型
      */
     @PostMapping("/save")
-    public boolean save(Order order, HttpServletRequest request) {
+    public boolean save(@RequestBody Order order, HttpServletRequest request) {
         try {
             //获取用户登录名
             String username = request.getRemoteUser();
@@ -81,9 +79,41 @@ public class OrderController {
      * @return 返回map集合数据类型
      */
     @GetMapping("/genPayCode")
-    public Map<String, Object> genPayCode() {
-        IdWorker idWorker = new IdWorker();
-        long orderId = idWorker.nextId();
-        return weiXinPayService.genPayCode(orderId + "", "0.1");
+    public Map<String, String> genPayCode(HttpServletRequest request) {
+        String username = request.getRemoteUser();
+        //据用户id查询支付日志 ,返回支付日志对象
+        PayLog payLog = orderService.findPayLogFromRedis(username);
+        //获得交易订单号和总金额
+        String outTradeNo = payLog.getOutTradeNo();Long totalFee = payLog.getTotalFee();
+        //返回map集合封装参数
+        return weiXinPayService.genPayCode(outTradeNo, String.valueOf(totalFee));
+    }
+
+    /**
+     * 查询订单支付状态
+     * @param outTradeNo  订单号码
+     * @return  返回map集合封装参数
+     */
+    @GetMapping("/queryPayStatus")
+    public Map<String,String> queryPayStatus(String outTradeNo){
+        //定义map集合封装返回参数
+        Map<String,String> data = new HashMap<>(16);
+
+        //调用服务层方法查询订单状态
+        Map<String, String> resultMap = weiXinPayService.queryPayStatus(outTradeNo);
+        //定义变量
+        String statusS = "SUCCESS" ,statusF = "FAIL",mapKey = "tradeState";
+        //判断返回结果
+        if (resultMap != null && resultMap.size()>0) {
+            data.put("totalFee",resultMap.get("totalFee"));
+            if (statusS.equals(resultMap.get(mapKey))){
+                data.put("status","1");
+            }
+            if (statusF.equals(resultMap.get(mapKey))){
+                data.put("status","3");
+            }
+        }
+        //返回结果
+        return data;
     }
 }

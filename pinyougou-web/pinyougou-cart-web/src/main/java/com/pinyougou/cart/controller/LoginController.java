@@ -17,7 +17,7 @@ import java.util.Map;
  * --------------------------------
  */
 @RestController
-public class LnginController {
+public class LoginController {
 
     @GetMapping("/user/showName")
     public Map<String,String> showName(HttpServletRequest request){

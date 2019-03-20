@@ -42,7 +42,7 @@ public class WeixinPayServiceImpl implements WeiXinPayService {
      * 获取code_url生成支付二维码
      */
     @Override
-    public Map<String,Object> genPayCode(String outTradeNo, String totalFee){
+    public Map<String,String> genPayCode(String outTradeNo, String totalFee){
         try{
             // 1. 定义Map集合封装请求参数
             Map<String, String> params = new HashMap<>();
@@ -73,7 +73,7 @@ public class WeixinPayServiceImpl implements WeiXinPayService {
             // 2. 调用统一下单接口,得到响应数据(https请求)
             HttpClientUtils httpClientUtils = new HttpClientUtils(true);
             String xmlResData = httpClientUtils.sendPost(unifiedorder, xmlParam);
-            System.out.println("响应数据：" + xmlResData);
+            System.out.println("==========响应数据：" + xmlResData);
 
             // 3. 获取响应数据，返回数据
             // 3.1 把xml格式转化成Map集合
@@ -81,7 +81,7 @@ public class WeixinPayServiceImpl implements WeiXinPayService {
 
 
             // {outTradeNo : "", money :100, codeUrl : ''}
-            Map<String,Object> data = new HashMap<>(16);
+            Map<String,String> data = new HashMap<>(16);
             // 二维码链接	code_url
             data.put("codeUrl", map.get("code_url"));
             data.put("outTradeNo", outTradeNo);
@@ -91,5 +91,51 @@ public class WeixinPayServiceImpl implements WeiXinPayService {
         }catch (Exception ex){
             throw new RuntimeException(ex);
         }
+    }
+
+    /**
+     * 查询订单支付状态
+     * @param outTradeNo 订单号
+     * @return 返回map集合封装参数
+     */
+    @Override
+    public Map<String, String> queryPayStatus(String outTradeNo) {
+        Map<String,String> param = new HashMap<>();
+        // 1. 定义Map集合封装请求参数
+        Map<String, String> params = new HashMap<>();
+
+        // 公众账号ID 	appid
+        params.put("appid", appid);
+        // 商户号	mch_id
+        params.put("mch_id", partner);
+        // 随机字符串	nonce_str
+        params.put("nonce_str", WXPayUtil.generateNonceStr());
+        // 商户订单号	out_trade_no
+        params.put("out_trade_no", outTradeNo);
+
+        try {
+            // 把Map集合转化成xml请求参数 加签名sign参数
+            String xmlParam = WXPayUtil.generateSignedXml(params, partnerkey);
+            System.out.println("请求参数: " + xmlParam);
+            //使用httpClientUtils工具类发送请求
+            HttpClientUtils httpClientUtils = new HttpClientUtils(true);
+            //返回结果
+            String resultXml = httpClientUtils.sendPost(orderquery, xmlParam);
+            System.out.println("返回结果 : resultXml ==" + resultXml);
+            //将xml格式转成map集合
+            Map<String, String> resultMap = WXPayUtil.xmlToMap(resultXml);
+
+
+            //定义map集合封装请求参数
+            Map<String,String> data = new HashMap<>(16);
+            // 二维码链接	code_url
+            data.put("tradeState", resultMap.get("trade_state"));
+            data.put("totalFee", resultMap.get("total_fee"));
+            return data;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

@@ -1,6 +1,8 @@
 package com.pinyougou.service;
 
 import com.pinyougou.pojo.Order;
+import com.pinyougou.pojo.PayLog;
+
 import java.util.List;
 import java.io.Serializable;
 /**
@@ -34,4 +36,10 @@ public interface OrderService {
 	/** 多条件分页查询 */
 	List<Order> findByPage(Order order, int page, int rows);
 
+	/**
+	 * 根据用户id查询支付日志
+	 * @param username  用户id
+	 * @return  返回支付日志对象封装参数
+	 */
+	PayLog findPayLogFromRedis(String username);
 }

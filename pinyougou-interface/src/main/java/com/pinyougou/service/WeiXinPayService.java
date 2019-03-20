@@ -18,5 +18,12 @@ public interface WeiXinPayService {
      * @param totalFee   总金额
      * @return  返回map集合封装参数
      */
-    Map<String,Object> genPayCode(String outTradeNo, String totalFee);
+    Map<String,String> genPayCode(String outTradeNo, String totalFee);
+
+    /**
+     *  查询支付状态
+     * @param outTradeNo 订单号
+     * @return  返回map集合封装参数
+     */
+    Map<String,String> queryPayStatus(String outTradeNo);
 }
